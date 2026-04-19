@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+if [ "$TERM" != 'dumb' ] && [ "$TERM" != 'unknown' ]; then
+  black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7)
+  bold=$(tput bold); ul=$(tput smul); reset=$(tput sgr 0)
+  nl=$'\n'
+fi
+
+if [ $EUID -ne 0 ]; then
+   echo "${bold}This script is not running as root. Please use sudo.${reset}"
+   exit 1
+fi
+
+REPO='https://download.docker.com/linux/ubuntu'
+DOCKER_GPG='/etc/apt/keyrings/docker.gpg'
+DOCKER_SOURCES='/etc/apt/sources.list.d/docker.list'
+ARCH=$(dpkg --print-architecture)
+OS_RELEASE=$(. /etc/os-release && echo $VERSION_CODENAME)
+
+
+#######################  INSTALLING SYSTEM PACKAGES  #######################
+
+echo "${nl}${nl}${bold}Installing system packages:${reset}"
+
+apt-get update
+apt-get install -y --no-install-recommends \
+  ca-certificates curl gnupg apache2-utils tree
+
+install -m 0755 -d '/etc/apt/keyrings'
+
+if [ ! -f $DOCKER_GPG ]; then
+  curl -fsSL $REPO/gpg | gpg --dearmor -o $DOCKER_GPG
+  chmod a+r $DOCKER_GPG
+fi
+
+if [ ! -f $DOCKER_SOURCES ]; then
+  > $DOCKER_SOURCES echo "deb [arch=$ARCH signed-by=$DOCKER_GPG] $REPO $OS_RELEASE stable"
+fi
+
+apt-get update
+
+if apt-cache policy docker-ce | grep -q "$REPO"; then
+  echo "Docker repository setup successfully."
+else
+  echo "ERROR: Docker repository setup failed."
+  exit 1
+fi
+
+apt-get install -y --no-install-recommends \
+  docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+
+#######################  SETTING UP SECRETS  #######################
+
+echo "${nl}${nl}${bold}Setting up secrets:${reset}"
+
+DEFAULT_OWNERSHIP=1000:1000     # Owned and accessed by container mock user
+DEFAULT_PERMISSIONS=0440        # Readable by owner and group
+
+ensure_secret_file() {
+  local file="$1"
+  local ownership="${2:-$DEFAULT_OWNERSHIP}"
+  local permissions="${3:-$DEFAULT_PERMISSIONS}"
+  local owner="${ownership%:*}"
+  local group="${ownership#*:}"
+
+  [ -f "$file" ] || install -m "$permissions" -o "$owner" -g "$group" /dev/null "$file"
+}
+
+add_secret() {
+  local content; read content
+  ensure_secret_file "$1" "$2" "$3"
+  local file="$1"
+
+  echo "$content" >> "$file"
+}
+
+
+services_files='/usr/local/share/proxy_services'
+install -m 0755 -d "$services_files"
+
+tg_proxy_files="$services_files/tg_proxy"
+install -m 0755 -d "$tg_proxy_files"
+
+if [ -f "$tg_proxy_files/secrets" ]; then
+  echo "TG-Proxy secrets file already exists. Skipping generation."
+else
+  for run in {1..16}; do
+    head -c 16 /dev/urandom | xxd -p | add_secret "$tg_proxy_files/secrets"
+  done
+
+  echo "${nl}${bold}Generated TG-Proxy secrets:${reset}"
+  cat "$tg_proxy_files/secrets"
+fi
+
+ensure_secret_file "$tg_proxy_files/.env"
+printf "SECRET=" > "$tg_proxy_files/.env"
+cat "$tg_proxy_files/secrets" | tr '\n' ',' | sed 's/,$/\n/' >> "$tg_proxy_files/.env"
+
+
+echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
+tree -a $services_files
+
+
+#######################  STARTING SERVICES  #######################
+
+echo "${nl}${nl}${bold}Starting up services:${reset}"
+
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+docker compose --file "$DIR/compose.yml" up --detach

@@ -1,0 +1,19 @@
+name: proxy-services
+
+services:
+  tg-proxy:
+    container_name: tg-proxy
+    image: telegrammessenger/proxy:latest
+    restart: unless-stopped
+    ports:
+      - 443:443
+    env_file: 
+      - .env
+      - /usr/local/share/proxy_services/tg_proxy/.env
+    volumes:
+      - tg-proxy-data:/data
+
+volumes:
+  tg-proxy-data:
+
+secrets:
