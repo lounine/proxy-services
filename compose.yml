@@ -15,5 +15,3 @@ services:
 
 volumes:
   tg-proxy-data:
-
-secrets:
