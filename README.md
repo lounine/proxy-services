@@ -16,7 +16,12 @@
    git clone https://github.com/lounine/proxy-services.git /opt/proxy-services
    ```
 
-5. Run the setup script:
+5. Optionaly:
+   ```
+   echo TG_PROXY_PORT=__MY_CUSTOM_PORT__ >> /opt/proxy-services/.env
+   ```
+
+   Then run the setup script:
    ```
    /opt/proxy-services/setup.sh
    ```

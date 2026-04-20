@@ -28,6 +28,11 @@ apt-get update
 apt-get install -y --no-install-recommends \
   ca-certificates curl gnupg apache2-utils tree
 
+
+#######################  INSTALLING DOCKER  #######################
+
+echo "${nl}${bold}Installing Docker:${reset}"
+
 install -m 0755 -d '/etc/apt/keyrings'
 
 if [ ! -f $DOCKER_GPG ]; then
@@ -42,7 +47,7 @@ fi
 apt-get update
 
 if apt-cache policy docker-ce | grep -q "$REPO" ; then
-  echo "${bold}Successfully set up Docker repository.${reset}${nl}"
+  echo "${bold}Successfully set up repository, installing Docker...${reset}"
 else
   echo "${bold}${red}ERROR: Docker repository setup failed.${reset}"
   exit 1
@@ -54,7 +59,7 @@ apt-get install -y --no-install-recommends \
 
 #######################  SETTING UP SECRETS  #######################
 
-echo "${nl}${nl}${bold}Setting up secrets:${reset}"
+echo "${nl}${bold}Setting up secrets:${reset}"
 
 DEFAULT_OWNERSHIP=1000:1000     # Owned and accessed by container mock user
 DEFAULT_PERMISSIONS=0440        # Readable by owner and group
@@ -106,7 +111,7 @@ tree -a $services_files
 
 #######################  STARTING SERVICES  #######################
 
-echo "${nl}${nl}${bold}Starting up services:${reset}"
+echo "${nl}${bold}Starting up services:${reset}"
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 docker compose --file "$DIR/compose.yml" up --detach
