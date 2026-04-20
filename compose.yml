@@ -6,9 +6,10 @@ services:
     image: telegrammessenger/proxy:latest
     restart: unless-stopped
     ports:
-      - 443:443
-    env_file: 
-      - .env
+      - ${TG_PROXY_PORT:-443}:443
+    environment:
+      - TZ=${TZ:-UTC}
+    env_file:
       - /usr/local/share/proxy_services/tg_proxy/.env
     volumes:
       - tg-proxy-data:/data
