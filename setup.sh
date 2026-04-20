@@ -42,9 +42,9 @@ fi
 apt-get update
 
 if apt-cache policy docker-ce | grep -q "$REPO" ; then
-  echo "Docker repository setup successfully."
+  echo "${bold}Successfully set up Docker repository.${reset}${nl}"
 else
-  echo "ERROR: Docker repository setup failed."
+  echo "${bold}${red}ERROR: Docker repository setup failed.${reset}"
   exit 1
 fi
 
@@ -71,7 +71,7 @@ ensure_secret_file() {
 
 add_secret() {
   local content; read content
-  ensure_secret_file "$1" "$2" "$3"
+  ensure_secret_file "$@"
   local file="$1"
 
   echo "$content" >> "$file"
