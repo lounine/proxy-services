@@ -3,7 +3,7 @@ name: proxy-services
 services:
   tg-proxy:
     container_name: tg-proxy
-    image: telegrammessenger/proxy:2.0beta
+    image: telegrammessenger/proxy:latest
     restart: unless-stopped
     ports:
       - ${TG_PROXY_PORT:-443}:443
