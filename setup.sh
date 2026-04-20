@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu -o pipefail
+set -eu
 
 if [ "$TERM" != 'dumb' ] && [ "$TERM" != 'unknown' ]; then
   black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7)
@@ -9,7 +9,7 @@ if [ "$TERM" != 'dumb' ] && [ "$TERM" != 'unknown' ]; then
 fi
 
 if [ $EUID -ne 0 ]; then
-   echo "${bold}This script is not running as root. Please use sudo.${reset}"
+   echo "${bold}This script should be run with root privileges. Please use sudo.${reset}"
    exit 1
 fi
 
@@ -22,7 +22,7 @@ OS_RELEASE=$(. /etc/os-release && echo $VERSION_CODENAME)
 
 #######################  INSTALLING SYSTEM PACKAGES  #######################
 
-echo "${nl}${nl}${bold}Installing system packages:${reset}"
+echo "${nl}${bold}Installing system packages:${reset}"
 
 apt-get update
 apt-get install -y --no-install-recommends \
@@ -41,7 +41,7 @@ fi
 
 apt-get update
 
-if apt-cache policy docker-ce | grep -q "$REPO"; then
+if apt-cache policy docker-ce | grep -q "$REPO" ; then
   echo "Docker repository setup successfully."
 else
   echo "ERROR: Docker repository setup failed."
