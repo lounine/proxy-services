@@ -13,6 +13,8 @@ if [ $EUID -ne 0 ]; then
    exit 1
 fi
 
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
 REPO='https://download.docker.com/linux/ubuntu'
 DOCKER_GPG='/etc/apt/keyrings/docker.gpg'
 DOCKER_SOURCES='/etc/apt/sources.list.d/docker.list'
@@ -82,12 +84,19 @@ add_secret() {
   echo "$content" >> "$file"
 }
 
+stripcolors() {
+  sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+}
+
 
 services_files='/usr/local/share/proxy_services'
 install -m 0755 -d "$services_files"
 
 tg_proxy_files="$services_files/tg_proxy"
 install -m 0755 -d "$tg_proxy_files"
+
+telego_files="$services_files/telego"
+install -m 0755 -d "$telego_files"
 
 if [ -f "$tg_proxy_files/secrets" ]; then
   echo "TG-Proxy secrets file already exists. Skipping generation."
@@ -105,6 +114,33 @@ printf "SECRET=" > "$tg_proxy_files/.env"
 cat "$tg_proxy_files/secrets" | tr '\n' ',' | sed 's/,$/\n/' >> "$tg_proxy_files/.env"
 
 
+if [ -f "$telego_files/secrets" ]; then
+  echo "Telego secrets file already exists. Skipping generation."
+else
+  for run in {1..16}; do
+    secret_output=$(
+      docker run -t --rm scratchnet/telego:v0.3 generate pkgs.alpinelinux.org |
+      stripcolors
+    )
+    if [[ $secret_output =~ (^| )secret=([a-f0-9]*) ]]; then
+      echo "user${run}=${BASH_REMATCH[2]}" | add_secret "$telego_files/secrets"
+    else
+      echo "${bold}${red}ERROR: Failed to generate a valid secret for Telego. Output:${reset}"
+      echo "$secret_output"
+      exit 1
+    fi
+  done
+
+  echo "${nl}${bold}Generated Telego secrets:${reset}"
+  cat "$telego_files/secrets"
+fi
+
+ensure_secret_file "$telego_files/config.toml"
+secrets_content=$(cat "$telego_files/secrets")
+cat "$DIR/telego_files/config.toml" | awk -v r="$secrets_content" '{gsub(/%SECRETS%/,r)}1' \
+  > "$tg_proxy_files/config.toml"
+
+
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
 tree -a $services_files
 
@@ -113,5 +149,4 @@ tree -a $services_files
 
 echo "${nl}${bold}Starting up services:${reset}"
 
-DIR="$( cd "$( dirname "$0" )" && pwd )"
 docker compose --file "$DIR/compose.yml" up --detach
