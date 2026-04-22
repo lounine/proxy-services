@@ -76,19 +76,6 @@ create_secret_file() {
   install -m "$permissions" -o "$owner" -g "$group" /dev/null "$file"
 }
 
-ensure_secret_file() {
-  local file="$1"
-  [ -f "$file" ] || create_secret_file "$@"
-}
-
-add_secret() {
-  local content; read content
-  ensure_secret_file "$@"
-  local file="$1"
-
-  echo "$content" >> "$file"
-}
-
 stripcolors() {
   sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
 }
@@ -106,8 +93,9 @@ install -m 0755 -d "$telego_files"
 if [ -f "$tg_proxy_files/secrets" ]; then
   echo "TG-Proxy secrets file already exists. Skipping generation."
 else
+  create_secret_file "$tg_proxy_files/secrets"
   for run in {1..16}; do
-    head -c 16 /dev/urandom | xxd -p | add_secret "$tg_proxy_files/secrets"
+    head -c 16 /dev/urandom | xxd -p >> "$tg_proxy_files/secrets"
   done
 
   echo "${nl}${bold}Generated TG-Proxy secrets:${reset}"
@@ -132,8 +120,8 @@ else
       stripcolors
     )
     if [[ $secret_output =~ dd_link=.*( )secret=([a-f0-9]*) ]]; then
-      echo "user${run}: ${BASH_REMATCH[0]}${nl}" | add_secret "$telego_files/secrets.links"
-      echo "user${run} = \"${BASH_REMATCH[2]}\"" | add_secret "$telego_files/secrets"
+      echo "user${run}: ${BASH_REMATCH[0]}${nl}" >> "$telego_files/secrets.links"
+      echo "user${run} = \"${BASH_REMATCH[2]}\"" >> "$telego_files/secrets"
     else
       echo "${bold}${red}ERROR: Failed to generate a valid secret for Telego. Output:${reset}"
       echo "$secret_output"
