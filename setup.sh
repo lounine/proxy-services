@@ -126,7 +126,7 @@ else
   create_secret_file "$telego_files/secrets"
   create_secret_file "$telego_files/secrets.links"
 
-  for run in {1..16}; do
+  for run in {1..9}; do
     secret_output=$(
       docker run -t --rm scratchnet/telego:v0.3 generate pkgs.alpinelinux.org |
       stripcolors
