@@ -124,7 +124,7 @@ else
       stripcolors
     )
     if [[ $secret_output =~ (^| )secret=([a-f0-9]*) ]]; then
-      echo "user${run}=${BASH_REMATCH[2]}" | add_secret "$telego_files/secrets"
+      echo "user${run} = \"${BASH_REMATCH[2]}\"" | add_secret "$telego_files/secrets"
     else
       echo "${bold}${red}ERROR: Failed to generate a valid secret for Telego. Output:${reset}"
       echo "$secret_output"
