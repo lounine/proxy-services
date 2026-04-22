@@ -125,14 +125,14 @@ else
   echo "${nl}${bold}Generating Telego secrets...${reset}"
   create_secret_file "$telego_files/secrets"
   create_secret_file "$telego_files/secrets.links"
-  
+
   for run in {1..16}; do
     secret_output=$(
       docker run -t --rm scratchnet/telego:v0.3 generate pkgs.alpinelinux.org |
       stripcolors
     )
     if [[ $secret_output =~ dd_link=.*( )secret=([a-f0-9]*) ]]; then
-      echo "user${run}: ${BASH_REMATCH[0]}" | add_secret "$telego_files/secrets.links"
+      echo "user${run}: ${BASH_REMATCH[0]}${nl}" | add_secret "$telego_files/secrets.links"
       echo "user${run} = \"${BASH_REMATCH[2]}\"" | add_secret "$telego_files/secrets"
     else
       echo "${bold}${red}ERROR: Failed to generate a valid secret for Telego. Output:${reset}"
@@ -142,7 +142,7 @@ else
   done
 
   echo "${nl}${bold}Generated Telego secrets:${reset}"
-  cat "$telego_files/secrets"
+  cat "$telego_files/secrets.links"
 fi
 
 create_secret_file "$telego_files/config.toml"
