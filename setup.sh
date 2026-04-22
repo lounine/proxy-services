@@ -117,6 +117,7 @@ cat "$tg_proxy_files/secrets" | tr '\n' ',' | sed 's/,$/\n/' >> "$tg_proxy_files
 if [ -f "$telego_files/secrets" ]; then
   echo "Telego secrets file already exists. Skipping generation."
 else
+  echo "${nl}${bold}Generating Telego secrets...${reset}"
   for run in {1..16}; do
     secret_output=$(
       docker run -t --rm scratchnet/telego:v0.3 generate pkgs.alpinelinux.org |
@@ -137,8 +138,8 @@ fi
 
 ensure_secret_file "$telego_files/config.toml"
 secrets_content=$(cat "$telego_files/secrets")
-cat "$DIR/telego_files/config.toml" | awk -v r="$secrets_content" '{gsub(/%SECRETS%/,r)}1' \
-  > "$tg_proxy_files/config.toml"
+cat "$DIR/telego/config.toml" | awk -v r="$secrets_content" '{gsub(/%SECRETS%/,r)}1' \
+  > "$telego_files/config.toml"
 
 
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
