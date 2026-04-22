@@ -66,14 +66,19 @@ echo "${nl}${bold}Setting up secrets:${reset}"
 DEFAULT_OWNERSHIP=1000:1000     # Owned and accessed by container mock user
 DEFAULT_PERMISSIONS=0440        # Readable by owner and group
 
-ensure_secret_file() {
+create_secret_file() {
   local file="$1"
   local ownership="${2:-$DEFAULT_OWNERSHIP}"
   local permissions="${3:-$DEFAULT_PERMISSIONS}"
   local owner="${ownership%:*}"
   local group="${ownership#*:}"
 
-  [ -f "$file" ] || install -m "$permissions" -o "$owner" -g "$group" /dev/null "$file"
+  install -m "$permissions" -o "$owner" -g "$group" /dev/null "$file"
+}
+
+ensure_secret_file() {
+  local file="$1"
+  [ -f "$file" ] || create_secret_file "$@"
 }
 
 add_secret() {
@@ -109,8 +114,8 @@ else
   cat "$tg_proxy_files/secrets"
 fi
 
-ensure_secret_file "$tg_proxy_files/.env"
-printf "SECRET=" > "$tg_proxy_files/.env"
+create_secret_file "$tg_proxy_files/.env"
+printf "SECRET=" >> "$tg_proxy_files/.env"
 cat "$tg_proxy_files/secrets" | tr '\n' ',' | sed 's/,$/\n/' >> "$tg_proxy_files/.env"
 
 
@@ -118,12 +123,16 @@ if [ -f "$telego_files/secrets" ]; then
   echo "Telego secrets file already exists. Skipping generation."
 else
   echo "${nl}${bold}Generating Telego secrets...${reset}"
+  create_secret_file "$telego_files/secrets"
+  create_secret_file "$telego_files/secrets.links"
+  
   for run in {1..16}; do
     secret_output=$(
       docker run -t --rm scratchnet/telego:v0.3 generate pkgs.alpinelinux.org |
       stripcolors
     )
-    if [[ $secret_output =~ (^| )secret=([a-f0-9]*) ]]; then
+    if [[ $secret_output =~ dd_link=.*( )secret=([a-f0-9]*) ]]; then
+      echo "user${run}: ${BASH_REMATCH[0]}" | add_secret "$telego_files/secrets.links"
       echo "user${run} = \"${BASH_REMATCH[2]}\"" | add_secret "$telego_files/secrets"
     else
       echo "${bold}${red}ERROR: Failed to generate a valid secret for Telego. Output:${reset}"
@@ -136,7 +145,7 @@ else
   cat "$telego_files/secrets"
 fi
 
-ensure_secret_file "$telego_files/config.toml"
+create_secret_file "$telego_files/config.toml"
 secrets_content=$(cat "$telego_files/secrets")
 cat "$DIR/telego/config.toml" | awk -v r="$secrets_content" '{gsub(/%SECRETS%/,r)}1' \
   > "$telego_files/config.toml"
