@@ -38,8 +38,8 @@ services:
       - ${MTG_PORT:-8443}:443
     environment:
       - TZ=${TZ:-UTC}
-    volumes:
-      - ./mtg/config.toml:/config/config.toml:ro
+    # volumes:
+      # - ./mtg/config.toml:/config/config.toml:ro
 
 volumes:
   tg-proxy-data:
