@@ -113,6 +113,10 @@ cat "$DIR/mtg/config.toml" | gomplate -c "$context" > "$mtg_files/config.toml"
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
 tree -a --dirsfirst $services_files
 
+echo "${nl}${bold}Telegram proxy status:${reset}"
+docker run --rm -v "$mtg_files/config.toml:/config/config.toml" \
+  nineseconds/mtg:2 doctor /config/config.toml
+
 
 ###########################  STARTING SERVICES  ############################
 
