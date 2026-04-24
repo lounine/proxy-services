@@ -111,7 +111,7 @@ create_secret_file "$mtg_files/config.toml"
 cat "$DIR/mtg/config.toml" | gomplate -c "$context" > "$mtg_files/config.toml"
 
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
-tree -a $services_files
+tree -a --dirsfirst $services_files
 
 
 ###########################  STARTING SERVICES  ############################
