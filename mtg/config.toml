@@ -18,7 +18,7 @@ debug = false
 # A secret. Please remember that mtg supports only FakeTLS mode, legacy
 # simple and secured mode are prohibited. For you it means that secret
 # should either be base64-encoded or starts with ee.
-secret = "{{ file.Read "/usr/local/share/proxy_services/mtg/secret" }}"
+secret = "{{ .settings.telegram.secret }}"
 
 # Host:port pair to run proxy on.
 bind-to = "0.0.0.0:433"
