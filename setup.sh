@@ -13,57 +13,73 @@ if [ $EUID -ne 0 ]; then
    exit 1
 fi
 
+ARCH=$(dpkg --print-architecture)
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-REPO='https://download.docker.com/linux/ubuntu'
-DOCKER_GPG='/etc/apt/keyrings/docker.gpg'
-DOCKER_SOURCES='/etc/apt/sources.list.d/docker.list'
-ARCH=$(dpkg --print-architecture)
-OS_RELEASE=$(. /etc/os-release && echo $VERSION_CODENAME)
+services_files='/usr/local/share/proxy_services'
+install -m 0755 -d "$services_files"
 
 
 #######################  INSTALLING SYSTEM PACKAGES  #######################
 
-echo "${nl}${bold}Installing system packages:${reset}"
+if [ ! -f "$services_files"/system_packages_installed ]; then
+  echo "${nl}${bold}Installing system packages:${reset}"
 
-apt-get update
-apt-get install -y --no-install-recommends \
-  ca-certificates curl gnupg apache2-utils tree
+  apt-get update
+  apt-get install -y --no-install-recommends \
+    ca-certificates curl gnupg apache2-utils tree
 
+  echo "Installing gomplate:"
+  curl -o /usr/local/bin/gomplate -#L \
+       https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
+  chmod 755 /usr/local/bin/gomplate
 
-#######################  INSTALLING DOCKER  #######################
-
-echo "${nl}${bold}Installing Docker:${reset}"
-
-install -m 0755 -d '/etc/apt/keyrings'
-
-if [ ! -f $DOCKER_GPG ]; then
-  curl -fsSL $REPO/gpg | gpg --dearmor -o $DOCKER_GPG
-  chmod a+r $DOCKER_GPG
+  touch "$services_files"/system_packages_installed
 fi
 
-if [ ! -f $DOCKER_SOURCES ]; then
-  > $DOCKER_SOURCES echo "deb [arch=$ARCH signed-by=$DOCKER_GPG] $REPO $OS_RELEASE stable"
+
+###########################  INSTALLING DOCKER  ############################
+
+if [ ! -f "$services_files"/docker_installed ]; then
+  echo "${nl}${bold}Installing Docker:${reset}"
+
+  REPO='https://download.docker.com/linux/ubuntu'
+  DOCKER_GPG='/etc/apt/keyrings/docker.gpg'
+  DOCKER_SOURCES='/etc/apt/sources.list.d/docker.list'
+  OS_RELEASE=$(. /etc/os-release && echo $VERSION_CODENAME)
+
+  install -m 0755 -d '/etc/apt/keyrings'
+
+  if [ ! -f $DOCKER_GPG ]; then
+    curl -fsSL $REPO/gpg | gpg --dearmor -o $DOCKER_GPG
+    chmod a+r $DOCKER_GPG
+  fi
+
+  if [ ! -f $DOCKER_SOURCES ]; then
+    > $DOCKER_SOURCES echo "deb [arch=$ARCH signed-by=$DOCKER_GPG] $REPO $OS_RELEASE stable"
+  fi
+
+  apt-get update
+
+  if apt-cache policy docker-ce | grep -q "$REPO" ; then
+    echo "${bold}Successfully set up repository, installing Docker...${reset}"
+  else
+    echo "${bold}${red}ERROR: Docker repository setup failed.${reset}"
+    exit 1
+  fi
+
+  apt-get install -y --no-install-recommends \
+    docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+  touch "$services_files"/docker_installed
 fi
 
-apt-get update
 
-if apt-cache policy docker-ce | grep -q "$REPO" ; then
-  echo "${bold}Successfully set up repository, installing Docker...${reset}"
-else
-  echo "${bold}${red}ERROR: Docker repository setup failed.${reset}"
-  exit 1
-fi
+##########################  SETTING UP SERVICES  ###########################
 
-apt-get install -y --no-install-recommends \
-  docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+echo "${nl}${bold}Setting up services:${reset}"
 
-
-#######################  SETTING UP SECRETS  #######################
-
-echo "${nl}${bold}Setting up secrets:${reset}"
-
-DEFAULT_OWNERSHIP=1000:1000     # Owned and accessed by container mock user
+DEFAULT_OWNERSHIP=1000:1000     # Owned and accessed by eventual container mock user
 DEFAULT_PERMISSIONS=0440        # Readable by owner and group
 
 create_secret_file() {
@@ -76,74 +92,29 @@ create_secret_file() {
   install -m "$permissions" -o "$owner" -g "$group" /dev/null "$file"
 }
 
-stripcolors() {
-  sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
-}
+mtg_files="$services_files/mtg"
+install -m 0755 -d "$mtg_files"
 
 
-services_files='/usr/local/share/proxy_services'
-install -m 0755 -d "$services_files"
+if [ ! -f "$services_files/settings.url" ]; then
+  create_secret_file "$services_files/settings.url"
 
-tg_proxy_files="$services_files/tg_proxy"
-install -m 0755 -d "$tg_proxy_files"
+  echo "${bold}Provide settings file url:${reset}"
+  read SETTINGS_URL
 
-telego_files="$services_files/telego"
-install -m 0755 -d "$telego_files"
-
-if [ -f "$tg_proxy_files/secrets" ]; then
-  echo "TG-Proxy secrets file already exists. Skipping generation."
-else
-  create_secret_file "$tg_proxy_files/secrets"
-  for run in {1..16}; do
-    head -c 16 /dev/urandom | xxd -p >> "$tg_proxy_files/secrets"
-  done
-
-  echo "${nl}${bold}Generated TG-Proxy secrets:${reset}"
-  cat "$tg_proxy_files/secrets"
+  echo -n ${SETTINGS_URL} > "$services_files/settings.url"
 fi
 
-create_secret_file "$tg_proxy_files/.env"
-printf "SECRET=" >> "$tg_proxy_files/.env"
-cat "$tg_proxy_files/secrets" | tr '\n' ',' | sed 's/,$/\n/' >> "$tg_proxy_files/.env"
+context=settings="$(cat "$services_files/settings.url")"
 
-
-if [ -f "$telego_files/secrets" ]; then
-  echo "Telego secrets file already exists. Skipping generation."
-else
-  echo "${nl}${bold}Generating Telego secrets...${reset}"
-  create_secret_file "$telego_files/secrets"
-  create_secret_file "$telego_files/secrets.links"
-
-  for run in {1..9}; do
-    secret_output=$(
-      docker run -t --rm scratchnet/telego:v0.3 generate pkgs.alpinelinux.org |
-      stripcolors
-    )
-    if [[ $secret_output =~ dd_link=.*( )secret=([a-f0-9]*) ]]; then
-      echo "user${run}: ${BASH_REMATCH[0]}${nl}" >> "$telego_files/secrets.links"
-      echo "user${run} = \"${BASH_REMATCH[2]}\"" >> "$telego_files/secrets"
-    else
-      echo "${bold}${red}ERROR: Failed to generate a valid secret for Telego. Output:${reset}"
-      echo "$secret_output"
-      exit 1
-    fi
-  done
-
-  echo "${nl}${bold}Generated Telego secrets:${reset}"
-  cat "$telego_files/secrets.links"
-fi
-
-create_secret_file "$telego_files/config.toml"
-secrets_content=$(cat "$telego_files/secrets")
-cat "$DIR/telego/config.toml" | awk -v r="$secrets_content" '{gsub(/%SECRETS%/,r)}1' \
-  > "$telego_files/config.toml"
-
+create_secret_file "$mtg_files/config.toml"
+cat "$DIR/mtg/config.toml" | gomplate -c "$context" > "$mtg_files/config.toml"
 
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
 tree -a $services_files
 
 
-#######################  STARTING SERVICES  #######################
+###########################  STARTING SERVICES  ############################
 
 echo "${nl}${bold}Starting up services:${reset}"
 

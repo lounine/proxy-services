@@ -1,45 +1,13 @@
 name: proxy-services
 
 services:
-  tg-proxy:
-    container_name: tg-proxy
-    image: lounine/tg-proxy
-    build:
-      context: ./tg-proxy
-    restart: unless-stopped
-    ports:
-      - ${TG_PROXY_PORT:-6443}:443
-    environment:
-      - TZ=${TZ:-UTC}
-    env_file:
-      - /usr/local/share/proxy_services/tg_proxy/.env
-    volumes:
-      - tg-proxy-data:/data
-      
-  telego:
-    image: scratchnet/telego:v0.3
-    container_name: telego
-    restart: unless-stopped
-    ports:
-      - ${TELEGO_PORT:-7443}:443
-    environment:
-      - TZ=${TZ:-UTC}
-    volumes:
-      - /usr/local/share/proxy_services/telego/config.toml:/config.toml:ro
-    cap_add:
-      - NET_BIND_SERVICE
-
   mtg:
     image: nineseconds/mtg:2
     container_name: mtg
     restart: unless-stopped
-    command: ["simple-run", "--debug", "0.0.0.0:443", "${MTG_SECRET}"]
     ports:
       - ${MTG_PORT:-8443}:443
     environment:
       - TZ=${TZ:-UTC}
-    # volumes:
-      # - ./mtg/config.toml:/config/config.toml:ro
-
-volumes:
-  tg-proxy-data:
+    volumes:
+      - /usr/local/share/proxy_services/mtg/config.toml:/config/config.toml:ro
