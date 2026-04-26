@@ -123,7 +123,6 @@ if [ ! -f "$services_files/users.url" ]; then
     set_permissions "$services_files/users.url" 0:0
   else
     cp "$services_files/settings.url" "$services_files/users.url"
-    set_permissions "$services_files/users.url" 0:0
   fi
 fi
 
