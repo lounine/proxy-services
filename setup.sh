@@ -88,9 +88,14 @@ set_permissions() {
   local path="$1"
   local ownership="${2:-$DEFAULT_OWNER:$DEFAULT_GROUP}"
   local permissions="${3:-$DEFAULT_FILE_PERMISSIONS}"
-  
-  chown "$ownership" "$path"
-  chmod "$permissions" "$path"
+
+  if [ -d "$path" ]; then
+    find "$path" -type f -exec chown "$ownership" {} \;
+    find "$path" -type f -exec chmod "$permissions" {} \;
+  else
+    chown "$ownership" "$path"
+    chmod "$permissions" "$path"
+  fi
 }
 
 install_dir() {
@@ -132,8 +137,9 @@ users=users="$(cat "$services_files/users.url")"
 cat "$DIR/mtg/config.toml" | gomplate -c "$settings" > "$mtg_files/config.toml"
 set_permissions "$mtg_files/config.toml"
 
+rm "$xray_files/config/*"
 gomplate -c "$settings" -c "$users" --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
-set_permissions "$xray_files/config/*"
+set_permissions "$xray_files/config"
 
 
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
