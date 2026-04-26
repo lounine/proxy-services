@@ -108,7 +108,6 @@ install_dir "$mtg_files"
 
 xray_files="$services_files/xray"
 install_dir "$xray_files"
-install_dir "$xray_files/config"
 
 
 if [ ! -f "$services_files/settings.url" ]; then
@@ -137,7 +136,8 @@ users=users="$(cat "$services_files/users.url")"
 cat "$DIR/mtg/config.toml" | gomplate -c "$settings" > "$mtg_files/config.toml"
 set_permissions "$mtg_files/config.toml"
 
-rm "$xray_files/config/*"
+[ -d "$xray_files/config" ] && rm -r "$xray_files/config"
+install_dir "$xray_files/config"
 gomplate -c "$settings" -c "$users" --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
 set_permissions "$xray_files/config"
 
