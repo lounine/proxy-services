@@ -32,7 +32,7 @@ if [ ! -f "$services_files"/system_packages_installed ]; then
   echo "Installing gomplate:"
   curl -o /usr/local/bin/gomplate -#L \
        https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
-  chmod 755 /usr/local/bin/gomplate
+  chmod 0755 /usr/local/bin/gomplate
 
   touch "$services_files"/system_packages_installed
 fi
@@ -79,36 +79,63 @@ fi
 
 echo "${nl}${bold}Setting up services:${reset}"
 
-DEFAULT_OWNERSHIP=1000:1000     # Owned and accessed by eventual container mock user
-DEFAULT_PERMISSIONS=0440        # Readable by owner and group
+DEFAULT_OWNER=1000              # Owned and accessed by eventual container mock user and group
+DEFAULT_GROUP=1000              
+DEFAULT_FILE_PERMISSIONS=0440   # Readable by owner and group
+DEFAULT_DIR_PERMISSIONS=0550    # Accessible by owner and group
 
-create_secret_file() {
-  local file="$1"
-  local ownership="${2:-$DEFAULT_OWNERSHIP}"
-  local permissions="${3:-$DEFAULT_PERMISSIONS}"
-  local owner="${ownership%:*}"
-  local group="${ownership#*:}"
+set_permissions() {
+  local path="$1"
+  local ownership="${2:-$DEFAULT_OWNER:$DEFAULT_GROUP}"
+  local permissions="${3:-$DEFAULT_FILE_PERMISSIONS}"
+  
+  chown "$ownership" "$path"
+  chmod "$permissions" "$path"
+}
 
-  install -m "$permissions" -o "$owner" -g "$group" /dev/null "$file"
+install_dir() {
+  local path="$1"
+  install -m $DEFAULT_DIR_PERMISSIONS -o $DEFAULT_OWNER -g $DEFAULT_GROUP -d "$path"
 }
 
 mtg_files="$services_files/mtg"
-install -m 0755 -d "$mtg_files"
+install_dir "$mtg_files"
+
+xray_files="$services_files/xray"
+install_dir "$xray_files"
+install_dir "$xray_files/config"
 
 
 if [ ! -f "$services_files/settings.url" ]; then
-  create_secret_file "$services_files/settings.url"
-
   echo "${bold}Provide settings file url:${reset}"
   read SETTINGS_URL
 
   echo -n ${SETTINGS_URL} > "$services_files/settings.url"
+  set_permissions "$services_files/settings.url" 0:0
 fi
 
-context=settings="$(cat "$services_files/settings.url")"
+if [ ! -f "$services_files/users.url" ]; then
+  echo "${bold}Provide users file url (leave blank to use settings file):${reset}"
+  read USERS_URL
 
-create_secret_file "$mtg_files/config.toml"
-cat "$DIR/mtg/config.toml" | gomplate -c "$context" > "$mtg_files/config.toml"
+  if [ -n "$USERS_URL" ]; then
+    echo -n ${USERS_URL} > "$services_files/users.url"
+    set_permissions "$services_files/users.url" 0:0
+  else
+    cp "$services_files/settings.url" "$services_files/users.url"
+    set_permissions "$services_files/users.url" 0:0
+  fi
+fi
+
+settings=settings="$(cat "$services_files/settings.url")"
+users=users="$(cat "$services_files/users.url")"
+
+cat "$DIR/mtg/config.toml" | gomplate -c "$settings" > "$mtg_files/config.toml"
+set_permissions "$mtg_files/config.toml"
+
+gomplate -c "$settings" -c "$users" --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
+set_permissions "$xray_files/config/*"
+
 
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
 tree -a --dirsfirst $services_files

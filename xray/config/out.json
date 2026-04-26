@@ -1,0 +1,10 @@
+{"outbounds":[
+  {
+    "tag": "internet",
+    "protocol": "freedom"
+  },
+  {
+    "tag": "block",
+    "protocol": "blackhole"
+  }
+]}

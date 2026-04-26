@@ -1,0 +1,13 @@
+{"inbounds":[{
+  "tag": "ws.vless",
+  "listen": "0.0.0.0",
+  "port": 8082,
+  "protocol": "vless",
+  "settings": {
+    "decryption": "none",
+    "clients": {{ .users.xray | jq "[.clients[] | {email:.name, id:.secret}]" | toJSON }}
+  },
+  "streamSettings": {
+    "network": "ws"
+  }
+}]}

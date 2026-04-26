@@ -1,0 +1,12 @@
+{"inbounds":[{
+  "tag": "ws.vmess",
+  "listen": "0.0.0.0",
+  "port": 8083,
+  "protocol": "vmess",
+  "settings": {
+    "clients": {{ .users.xray | jq "[.clients[] | {email:.name, id:.secret}]" | toJSON }}
+  },
+  "streamSettings": {
+    "network": "ws"
+  }
+}]}

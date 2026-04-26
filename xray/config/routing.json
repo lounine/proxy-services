@@ -1,0 +1,10 @@
+{"routing":{
+  "domainStrategy": "IPOnDemand",
+  "rules": [
+    {
+      "type": "field",
+      "ip": [ "geoip:private", "geoip:ru" ],
+      "outboundTag": "block"
+    }
+  ]
+}}
