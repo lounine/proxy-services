@@ -1,0 +1,61 @@
+{
+  admin off
+  auto_https disable_redirects    # Impossible to get rid of "Server: Caddy" header with automatic redirects 
+
+  servers {
+    protocols h1 h2               # Exclude http/3 and do not bind to udp/443
+  }
+}
+
+(match-websocket) {
+  header Connection *Upgrade*
+  header Upgrade    websocket
+}
+
+(xray-ws-common) {
+  rewrite /                       # Strip path as xray expects
+  transport http {
+    versions 2 
+  }
+}
+
+:80 {
+  header -Server
+  redir https://{host}{uri} permanent
+}
+
+{{ .settings.xray.reality.target }} {
+  auto_https off
+  reverse_proxy https://xray
+}
+
+{{ .settings.xray.websocket.access-domain }} {
+  reverse_proxy {{ .settings.xray.websocket.fake-source }}
+
+  @xray-ws-trojan {
+    path {{ "/" + .settings.xray.websocket.trojan.secret }}
+    import match-websocket
+  }
+  reverse_proxy @xray-ws-trojan {
+    to xray:8081
+    import xray-ws-common
+  }
+
+  @xray-ws-vless {
+    path {{ "/" + .settings.xray.websocket.vless.secret }}
+    import match-websocket
+  }
+  reverse_proxy @xray-ws-vless {
+    to xray:8082
+    import xray-ws-common
+  }
+
+  @xray-ws-vmess {
+    path {{ "/" + .settings.xray.websocket.vmess.secret }}
+    import match-websocket
+  }
+  reverse_proxy @xray-ws-vmess {
+    to xray:8083
+    import xray-ws-common
+  }
+}

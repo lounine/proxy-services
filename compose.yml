@@ -1,6 +1,16 @@
 name: proxy-services
 
 services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports: [80, 443]
+    environment:
+      - TZ=${TZ:-UTC}
+    volumes:
+      - /usr/local/share/proxy_services/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+  
   mtg:
     image: nineseconds/mtg:2
     container_name: mtg
@@ -18,8 +28,6 @@ services:
     build:
       context: ./xray
     restart: unless-stopped
-    ports:
-      - ${XRAY_PORT:-443}:443
     environment:
       - TZ=${TZ:-UTC}
     volumes:
