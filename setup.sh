@@ -147,7 +147,7 @@ tree -a --dirsfirst $services_files
 
 echo "${nl}${bold}Telegram proxy status:${reset}"
 docker run --rm -v "$mtg_files/config.toml:/config/config.toml" \
-  nineseconds/mtg:2 doctor /config/config.toml
+  nineseconds/mtg:2 doctor /config/config.toml || : # Ignore errors
 
 
 ###########################  STARTING SERVICES  ############################
