@@ -5,7 +5,9 @@ services:
     image: caddy:2-alpine
     container_name: caddy
     restart: unless-stopped
-    ports: [ "80", "443" ]
+    ports: 
+      - 80:80
+      - 443:443
     environment:
       - TZ=${TZ:-UTC}
     volumes:
