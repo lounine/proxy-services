@@ -86,21 +86,24 @@ DEFAULT_DIR_PERMISSIONS=0550    # Accessible by owner and group
 
 set_permissions() {
   local path="$1"
-  local ownership="${2:-$DEFAULT_OWNER:$DEFAULT_GROUP}"
-  local permissions="${3:-$DEFAULT_FILE_PERMISSIONS}"
+  local owner="${2:-$DEFAULT_OWNER}"
+  local group="${3:-$DEFAULT_GROUP}"
 
   if [ -d "$path" ]; then
-    find "$path" -type f -exec chown "$ownership" {} \;
-    find "$path" -type f -exec chmod "$permissions" {} \;
+    find "$path" -type f -exec chown "$owner:$group" {} \;
+    find "$path" -type f -exec chmod "$DEFAULT_FILE_PERMISSIONS" {} \;
   else
-    chown "$ownership" "$path"
-    chmod "$permissions" "$path"
+    chown "$owner:$group" "$path"
+    chmod "$DEFAULT_FILE_PERMISSIONS" "$path"
   fi
 }
 
 install_dir() {
   local path="$1"
-  install -m $DEFAULT_DIR_PERMISSIONS -o $DEFAULT_OWNER -g $DEFAULT_GROUP -d "$path"
+  local owner="${2:-$DEFAULT_OWNER}"
+  local group="${3:-$DEFAULT_GROUP}"
+
+  install -m $DEFAULT_DIR_PERMISSIONS -o $owner -g $group -d "$path"
 }
 
 mtg_files="$services_files/mtg"
@@ -109,13 +112,16 @@ install_dir "$mtg_files"
 xray_files="$services_files/xray"
 install_dir "$xray_files"
 
+caddy_files="$services_files/caddy"
+install_dir "$caddy_files"
+
 
 if [ ! -f "$services_files/settings.url" ]; then
   echo "${bold}Provide settings file url:${reset}"
   read SETTINGS_URL
 
   echo -n ${SETTINGS_URL} > "$services_files/settings.url"
-  set_permissions "$services_files/settings.url" 0:0
+  set_permissions "$services_files/settings.url" 0 0
 fi
 
 if [ ! -f "$services_files/users.url" ]; then
@@ -124,7 +130,7 @@ if [ ! -f "$services_files/users.url" ]; then
 
   if [ -n "$USERS_URL" ]; then
     echo -n ${USERS_URL} > "$services_files/users.url"
-    set_permissions "$services_files/users.url" 0:0
+    set_permissions "$services_files/users.url" 0 0
   else
     cp "$services_files/settings.url" "$services_files/users.url"
   fi
@@ -140,6 +146,9 @@ set_permissions "$mtg_files/config.toml"
 install_dir "$xray_files/config"
 gomplate -c "$settings" -c "$users" --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
 set_permissions "$xray_files/config"
+
+cat "$DIR/caddy/Caddyfile" | gomplate -c "$settings" > "$caddy_files/Caddyfile"
+set_permissions "$caddy_files/Caddyfile"
 
 
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
