@@ -5,9 +5,6 @@ services:
     image: caddy:2-alpine
     container_name: caddy
     restart: unless-stopped
-    ports: 
-      - 80:80
-      - 443:443
     environment:
       - TZ=${TZ:-UTC}
     volumes:
@@ -31,7 +28,7 @@ services:
       context: ./xray
     restart: unless-stopped
     ports:
-      - 7443:443
+      - ${XRAY_PORT:-443}:443
     environment:
       - TZ=${TZ:-UTC}
     volumes:
