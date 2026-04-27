@@ -33,7 +33,7 @@
   reverse_proxy {{ .settings.xray.websocket.fakeSource }}
 
   @xray-ws-trojan {
-    path {{ "/" + .settings.xray.websocket.trojan.secret }}
+    path {{ print "/" .settings.xray.websocket.trojan.secret }}
     import match-websocket
   }
   reverse_proxy @xray-ws-trojan {
@@ -42,7 +42,7 @@
   }
 
   @xray-ws-vless {
-    path {{ "/" + .settings.xray.websocket.vless.secret }}
+    path {{ print "/" .settings.xray.websocket.vless.secret }}
     import match-websocket
   }
   reverse_proxy @xray-ws-vless {
@@ -51,7 +51,7 @@
   }
 
   @xray-ws-vmess {
-    path {{ "/" + .settings.xray.websocket.vmess.secret }}
+    path {{ print "/" .settings.xray.websocket.vmess.secret }}
     import match-websocket
   }
   reverse_proxy @xray-ws-vmess {
