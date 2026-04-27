@@ -28,6 +28,8 @@ services:
     build:
       context: ./xray
     restart: unless-stopped
+    ports:
+      - 7443:443
     environment:
       - TZ=${TZ:-UTC}
     volumes:
