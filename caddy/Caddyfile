@@ -24,11 +24,6 @@
   redir https://{host}{uri} permanent
 }
 
-{{ .settings.xray.reality.target }} {
-  auto_https off
-  reverse_proxy https://xray
-}
-
 {{ .settings.xray.websocket.accessDomain }} {
   reverse_proxy {{ .settings.xray.websocket.fakeSource }}
 
