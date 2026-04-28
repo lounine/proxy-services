@@ -112,9 +112,6 @@ install_dir "$mtg_files"
 xray_files="$services_files/xray"
 install_dir "$xray_files"
 
-caddy_files="$services_files/caddy"
-install_dir "$caddy_files"
-
 
 if [ ! -f "$services_files/settings.url" ]; then
   echo "${bold}Provide settings file url:${reset}"
@@ -147,8 +144,6 @@ install_dir "$xray_files/config"
 gomplate -c "$settings" -c "$users" --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
 set_permissions "$xray_files/config"
 
-cat "$DIR/caddy/Caddyfile" | gomplate -c "$settings" > "$caddy_files/Caddyfile"
-set_permissions "$caddy_files/Caddyfile"
 
 
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"

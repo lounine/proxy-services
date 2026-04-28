@@ -1,17 +1,7 @@
 name: proxy-services
 
 services:
-  caddy:
-    image: caddy:2-alpine
-    container_name: caddy
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    environment:
-      - TZ=${TZ:-UTC}
-    volumes:
-      - /usr/local/share/proxy_services/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-  
+
   mtg:
     image: nineseconds/mtg:2
     container_name: mtg
