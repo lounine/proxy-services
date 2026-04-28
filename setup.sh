@@ -16,6 +16,8 @@ fi
 ARCH=$(dpkg --print-architecture)
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
+[ ! -f "$DIR/.env" ] && source "$DIR/.env"
+
 services_files='/usr/local/share/proxy_services'
 install -m 0755 -d "$services_files"
 
@@ -157,5 +159,5 @@ docker run --rm -v "$mtg_files/config.toml:/config/config.toml" \
 ###########################  STARTING SERVICES  ############################
 
 echo "${nl}${bold}Starting up services:${reset}"
-
 docker compose --file "$DIR/compose.yml" up --detach
+docker compose restart
