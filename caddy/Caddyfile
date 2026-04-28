@@ -24,7 +24,7 @@
   redir https://{host}{uri} permanent
 }
 
-{{ .settings.xray.websocket.accessDomain }} {
+{{ .settings.xray.websocket.address | strings.Split ":" | coll.Index 0 }} {
   reverse_proxy {{ .settings.xray.websocket.fakeSource }}
 
   @xray-ws-trojan {

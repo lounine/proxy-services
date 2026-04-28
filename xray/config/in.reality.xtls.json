@@ -5,6 +5,11 @@
   "protocol": "vless",
   "settings": {
     "decryption": "none",
+    "fallbacks": [
+      {
+        "dest": 80
+      }
+    ],
     "clients": {{ .users.xray |
       jq `[.clients[] | {email:.name, id:.secret, flow:"xtls-rprx-vision"}]` | toJSON }}
   },
@@ -12,8 +17,8 @@
     "network": "tcp",
     "security": "reality",
     "realitySettings": {
-      "target": "{{ .settings.xray.reality.target }}:443",
-      "serverNames": [ "{{ .settings.xray.reality.target }}" ],
+      "target": "{{ .settings.xray.reality.SNI }}:443",
+      "serverNames": [ "{{ .settings.xray.reality.SNI }}" ],
       "privateKey": "{{ .settings.xray.reality.privateKey }}",
       "shortIds": [ "" ]
     }
