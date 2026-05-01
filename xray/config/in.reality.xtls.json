@@ -9,7 +9,7 @@
       jq `[.clients[] | {email:.name, id:.secret, flow:"xtls-rprx-vision"}]` | toJSON }}
   },
   "streamSettings": {
-    "network": "tcp",
+    "network": "raw",
     "security": "reality",
     "realitySettings": {
       "target": "{{ .settings.xray.reality.SNI }}:443",

@@ -2,6 +2,29 @@ name: proxy-services
 
 services:
 
+  haproxy:
+    image: haproxy:3.2
+    container_name: haproxy
+    restart: unless-stopped
+    ports: [ "80", "443" ]
+    environment:
+      - TZ=${TZ:-UTC}
+    volumes:
+      - /usr/local/share/proxy_services/haproxy/config.cfg:/usr/local/etc/haproxy:ro
+
+  xray:
+    container_name: xray
+    image: lounine/xray
+    build:
+      context: ./xray
+    restart: unless-stopped
+    ports:
+      - ${XRAY_PORT:-7443}:443
+    environment:
+      - TZ=${TZ:-UTC}
+    volumes:
+      - /usr/local/share/proxy_services/xray/config/:/usr/local/etc/xray/:ro
+      
   mtg:
     image: nineseconds/mtg:2
     container_name: mtg
@@ -12,16 +35,3 @@ services:
       - TZ=${TZ:-UTC}
     volumes:
       - /usr/local/share/proxy_services/mtg/config.toml:/config/config.toml:ro
-
-  xray:
-    container_name: xray
-    image: lounine/xray
-    build:
-      context: ./xray
-    restart: unless-stopped
-    ports:
-      - ${XRAY_PORT:-443}:443
-    environment:
-      - TZ=${TZ:-UTC}
-    volumes:
-      - /usr/local/share/proxy_services/xray/config/:/usr/local/etc/xray/:ro
