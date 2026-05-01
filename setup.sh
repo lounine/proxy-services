@@ -141,7 +141,9 @@ haproxy_files="$services_files/haproxy"
 [ -d "$haproxy_files" ] && rm -rf "$haproxy_files"
 install_dir "$haproxy_files"
 
-cat "$DIR/haproxy/haproxy.cfg" | gomplate -c "$settings" > "$haproxy_files/haproxy.cfg"
+cat "$DIR/haproxy/haproxy.cfg" | \
+  env $( [ -f .env ] && cat .env | xargs ) \
+  gomplate -c "$settings" > "$haproxy_files/haproxy.cfg"
 set_permissions "$haproxy_files/haproxy.cfg" 99 99    # haproxy user and group
 
 
@@ -152,7 +154,8 @@ xray_files="$services_files/xray"
 install_dir "$xray_files"
 install_dir "$xray_files/config"
 
-gomplate -c "$settings" -c "$users" --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
+env $( [ -f .env ] && cat .env | xargs ) gomplate -c "$settings" -c "$users" \
+              --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
 set_permissions "$xray_files/config"
 
 
@@ -162,7 +165,9 @@ mtg_files="$services_files/mtg"
 [ -d "$mtg_files" ] && rm -rf "$mtg_files"
 install_dir "$mtg_files"
 
-cat "$DIR/mtg/config.toml" | gomplate -c "$settings" > "$mtg_files/config.toml"
+cat "$DIR/mtg/config.toml" | \
+  env $( [ -f .env ] && cat .env | xargs ) \
+  gomplate -c "$settings" > "$mtg_files/config.toml"
 set_permissions "$mtg_files/config.toml"
 
 
