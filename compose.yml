@@ -13,6 +13,9 @@ services:
       - TZ=${TZ:-UTC}
     volumes:
       - /usr/local/share/proxy_services/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - xray
+      - mtg
 
   xray:
     container_name: xray
