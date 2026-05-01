@@ -141,8 +141,8 @@ users=users="$(cat "$services_files/users.url")"
 
 ########## Preparing HAProxy configuration ##########
 
-cat "$DIR/haproxy/config.cfg" | gomplate -c "$settings" > "$haproxy_files/config.cfg"
-set_permissions "$haproxy_files/config.cfg"
+cat "$DIR/haproxy/haproxy.cfg" | gomplate -c "$settings" > "$haproxy_files/haproxy.cfg"
+set_permissions "$haproxy_files/haproxy.cfg"
 
 
 ########### Preparing Xray configuration ############
