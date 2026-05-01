@@ -10,7 +10,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
     volumes:
-      - /usr/local/share/proxy_services/haproxy/config.cfg:/usr/local/etc/haproxy/config.cfg:ro
+      - /usr/local/share/proxy_services/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
 
   xray:
     container_name: xray
