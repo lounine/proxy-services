@@ -108,12 +108,12 @@ install_dir() {
   install -m $DEFAULT_DIR_PERMISSIONS -o $owner -g $group -d "$path"
 }
 
-mtg_files="$services_files/mtg"
-install_dir "$mtg_files"
+haproxy_files="$services_files/haproxy" ;   install_dir "$haproxy_files"
+xray_files="$services_files/xray"       ;   install_dir "$xray_files"
+mtg_files="$services_files/mtg"         ;   install_dir "$mtg_files"
 
-xray_files="$services_files/xray"
-install_dir "$xray_files"
 
+################# Getting settings ##################
 
 if [ ! -f "$services_files/settings.url" ]; then
   echo "${bold}Provide settings file url:${reset}"
@@ -138,8 +138,14 @@ fi
 settings=settings="$(cat "$services_files/settings.url")"
 users=users="$(cat "$services_files/users.url")"
 
-cat "$DIR/mtg/config.toml" | gomplate -c "$settings" > "$mtg_files/config.toml"
-set_permissions "$mtg_files/config.toml"
+
+########## Preparing HAProxy configuration ##########
+
+cat "$DIR/haproxy/config.cfg" | gomplate -c "$settings" > "$haproxy_files/config.cfg"
+set_permissions "$haproxy_files/config.cfg"
+
+
+########### Preparing Xray configuration ############
 
 [ -d "$xray_files/config" ] && rm -r "$xray_files/config"
 install_dir "$xray_files/config"
@@ -147,6 +153,13 @@ gomplate -c "$settings" -c "$users" --input-dir "$DIR/xray/config" --output-dir 
 set_permissions "$xray_files/config"
 
 
+############ Preparing MTG configuration ############
+
+cat "$DIR/mtg/config.toml" | gomplate -c "$settings" > "$mtg_files/config.toml"
+set_permissions "$mtg_files/config.toml"
+
+
+################# All configs ready #################
 
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
 tree -a --dirsfirst $services_files
