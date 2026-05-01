@@ -16,7 +16,7 @@ fi
 ARCH=$(dpkg --print-architecture)
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-[ ! -f "$DIR/.env" ] && source "$DIR/.env"
+[ -f "$DIR/.env" ] && source "$DIR/.env"
 
 services_files='/usr/local/share/proxy_services'
 install -m 0755 -d "$services_files"
