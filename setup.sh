@@ -142,7 +142,7 @@ haproxy_files="$services_files/haproxy"
 install_dir "$haproxy_files"
 
 cat "$DIR/haproxy/haproxy.cfg" | gomplate -c "$settings" > "$haproxy_files/haproxy.cfg"
-set_permissions "$haproxy_files/haproxy.cfg"
+set_permissions "$haproxy_files/haproxy.cfg" 99 99    # haproxy user and group
 
 
 ########### Preparing Xray configuration ############
