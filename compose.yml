@@ -6,7 +6,9 @@ services:
     image: haproxy:3.2
     container_name: haproxy
     restart: unless-stopped
-    ports: [ "80", "443" ]
+    ports:
+      - 80:80
+      - 443:443
     environment:
       - TZ=${TZ:-UTC}
     volumes:
