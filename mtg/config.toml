@@ -328,7 +328,7 @@ download-concurrency = 2
 # a public IP/domain with hairpin NAT on your router. See README for
 # details.
 urls = [
-    "https://iplists.firehol.org/files/firehol_level1.netset",
+    "https://iplists.firehol.org/files/firehol_abusers_1d.netset",
     # "/local.file"
 ]
 # How often do we need to update a blocklist set.
