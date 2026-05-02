@@ -1,7 +1,7 @@
 {"inbounds":[{
-  "tag": "reality.xtls",
+  "tag": "vision",
   "listen": "0.0.0.0",
-  "port": 443,
+  "port": 1443,
   "protocol": "vless",
   "settings": {
     "decryption": "none",
@@ -12,8 +12,9 @@
     "network": "raw",
     "security": "reality",
     "realitySettings": {
-      "target": "{{ .settings.xray.reality.SNI }}:443",
-      "serverNames": [ "{{ .settings.xray.reality.SNI }}" ],
+      "show": {{ getenv "DEBUG" "false" }},
+      "target": "{{ .settings.xray.vision.SNI }}:443",
+      "serverNames": [ "{{ .settings.xray.vision.SNI }}" ],
       "privateKey": "{{ .settings.xray.reality.privateKey }}",
       "shortIds": [ "" ]
     }
