@@ -13,7 +13,7 @@ services:
       - TZ=${TZ:-UTC}
     volumes:
       - /usr/local/share/proxy_services/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    depends_on:
+    depends_on: # Haproxy resolves backend IPs on start – they must be up by then
       - xray
       - mtg
 
@@ -23,8 +23,6 @@ services:
     build:
       context: ./xray
     restart: unless-stopped
-    ports:
-      - ${XRAY_PORT:-7443}:443
     environment:
       - TZ=${TZ:-UTC}
     volumes:
@@ -34,8 +32,6 @@ services:
     image: nineseconds/mtg:2
     container_name: mtg
     restart: unless-stopped
-    ports:
-      - ${MTG_PORT:-8443}:443
     environment:
       - TZ=${TZ:-UTC}
     volumes:
