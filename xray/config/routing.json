@@ -6,6 +6,7 @@
       "outboundTag": "block"
     },
     {
+      "ip": [ "0.0.0.0/0", "::/0"],
       "outboundTag": "internet"
     }
   ]
