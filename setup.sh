@@ -90,13 +90,14 @@ set_permissions() {
   local path="$1"
   local owner="${2:-$DEFAULT_OWNER}"
   local group="${3:-$DEFAULT_GROUP}"
+  local permissions="${4:-$DEFAULT_FILE_PERMISSIONS}"
 
   if [ -d "$path" ]; then
     find "$path" -type f -exec chown "$owner:$group" {} \;
-    find "$path" -type f -exec chmod "$DEFAULT_FILE_PERMISSIONS" {} \;
+    find "$path" -type f -exec chmod "$permissions" {} \;
   else
     chown "$owner:$group" "$path"
-    chmod "$DEFAULT_FILE_PERMISSIONS" "$path"
+    chmod "$permissions" "$path"
   fi
 }
 
@@ -104,8 +105,9 @@ install_dir() {
   local path="$1"
   local owner="${2:-$DEFAULT_OWNER}"
   local group="${3:-$DEFAULT_GROUP}"
+  local permissions="${4:-$DEFAULT_DIR_PERMISSIONS}"
 
-  install -m $DEFAULT_DIR_PERMISSIONS -o $owner -g $group -d "$path"
+  install -m $permissions -o $owner -g $group -d "$path"
 }
 
 
@@ -158,7 +160,7 @@ env $( [ -f .env ] && cat .env | xargs ) gomplate -c "$settings" -c "$users" \
               --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
 set_permissions "$xray_files/config"
 
-install_dir /var/log/xray
+install_dir /var/log/xray 1000 1000 0750 # Log directory should be writable by xray user
 
 
 ############ Preparing MTG configuration ############
