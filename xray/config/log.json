@@ -1,7 +1,6 @@
 {"log":{
   "loglevel": {{ if eq (getenv "DEBUG") "true" }} "debug" {{ else }} "warning" {{ end }},
-  {{ if ne (getenv "DEBUG") "true" }} "maskAddress": "full", {{ end }}
   "dnsLog": {{ getenv "DEBUG" "false" }},
-  "access": {{ if eq (getenv "DEBUG") "true" }} "/var/log/xray/access.log" {{ else }} "none" {{ end }},
-  "error": "/var/log/xray/error.log"
+  "access": {{ if eq (getenv "DEBUG") "true" }} "/dev/stdout" {{ else }} "none" {{ end }},
+  "error": "/dev/stderr"
 }}

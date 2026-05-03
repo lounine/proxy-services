@@ -160,8 +160,6 @@ env $( [ -f .env ] && cat .env | xargs ) gomplate -c "$settings" -c "$users" \
               --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
 set_permissions "$xray_files/config"
 
-install_dir /var/log/xray 1000 1000 0750 # Log directory should be writable by xray user
-
 
 ############ Preparing MTG configuration ############
 
