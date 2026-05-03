@@ -11,7 +11,7 @@
   "streamSettings": {
     "network": "xhttp",
     "xhttpSettings": {
-      "path": "/api/v2/objects/"
+      "path": "/api/v1/id/"
     },
     "security": "reality",
     "realitySettings": {

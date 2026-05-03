@@ -2,11 +2,16 @@
   "domainStrategy": "IPOnDemand",
   "rules": [
     {
-      "ip": [ "geoip:private", "geoip:ru" ],
+      "ip": [ "geoip:private" ],
       "outboundTag": "block"
     },
     {
+      "ip": [ "geoip:ru" ],
       "outboundTag": "internet"
+    },
+    {
+      "ip": [ "0.0.0.0/0", "::/0"],
+      "outboundTag": "xhttp.stream-up"
     }
   ]
 }}
