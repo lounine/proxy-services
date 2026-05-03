@@ -6,7 +6,7 @@ RUN <<EOF
   echo "--> Installing dependencies"
   set -ex -o pipefail
 
-  apk add --no-cache curl unzip
+  apk add --no-cache tzdata curl unzip
 EOF
 
 COPY ./install.sh /install.sh

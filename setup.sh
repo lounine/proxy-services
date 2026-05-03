@@ -12,42 +12,47 @@ fi
 ##########################  READING CLI OPTIONS  ###########################
 
 usage() {
-	cat <<EOF
-Usage: ./setup.sh [--debug|-d] [--help|-h]
+  cat <<EOF
+Usage: ./setup.sh [--log-level|-l <level>] [--help|-h]
 
 Options:
-  --debug, -d		    	Enable debug logging in all configs
-  --help, -h		    	Show this help
+  --log-level, -l     Set the log level (default: warning)
+                      supported: debug, info, warning, error, none
+  --help, -h          Show this help
 
 EOF
 }
 
-DEBUG=
+LOG_LEVEL=warning
 
 while [[ $# -gt 0 ]]; do
-	case "$1" in
-		--debug|-d)
-			DEBUG=true
-			shift
-			;;
-		--help|-h)
-			usage
-			exit 0
-			;;
-		*)
-			echo "Unknown argument: $1" >&2
-			usage
-			exit 1
-			;;
-	esac
+  case "$1" in
+    --log-level|-l)
+      LOG_LEVEL="${2:-}"
+      shift 2
+      ;;
+    --log-level=*)
+      LOG_LEVEL="${1#*=}"
+      shift
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
 done
 
 
 ####################  CHECKING / PREPARING ENVIRONMENT  ####################
 
 if [ $EUID -ne 0 ]; then
-   echo "${bold}This script should be run with root privileges. Please use sudo.${reset}"
-   exit 1
+  echo "${bold}This script should be run with root privileges. Please use sudo.${reset}"
+  exit 1
 fi
 
 ARCH=$(dpkg --print-architecture)
@@ -68,7 +73,7 @@ if [ ! -f "$services_files"/-system-packages-installed ]; then
 
   echo "Installing gomplate:"
   curl -o /usr/local/bin/gomplate -#L \
-       https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
+      https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
   chmod 0755 /usr/local/bin/gomplate
 
   touch "$services_files"/-system-packages-installed
@@ -179,7 +184,7 @@ haproxy_files="$services_files/haproxy"
 install_dir "$haproxy_files"
 
 cat "$DIR/haproxy/haproxy.cfg" | \
-  DEBUG=$DEBUG gomplate -c "$settings" > "$haproxy_files/haproxy.cfg"
+  LOG_LEVEL=$LOG_LEVEL gomplate -c "$settings" > "$haproxy_files/haproxy.cfg"
 set_permissions "$haproxy_files/haproxy.cfg" 99 99    # haproxy user and group
 
 
@@ -190,7 +195,7 @@ xray_files="$services_files/xray"
 install_dir "$xray_files"
 install_dir "$xray_files/config"
 
-DEBUG=$DEBUG gomplate -c "$settings" -c "$users" \
+LOG_LEVEL=$LOG_LEVEL gomplate -c "$settings" -c "$users" \
               --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
 set_permissions "$xray_files/config"
 
@@ -202,7 +207,7 @@ mtg_files="$services_files/mtg"
 install_dir "$mtg_files"
 
 cat "$DIR/mtg/config.toml" | \
-  DEBUG=$DEBUG gomplate -c "$settings" > "$mtg_files/config.toml"
+  LOG_LEVEL=$LOG_LEVEL gomplate -c "$settings" > "$mtg_files/config.toml"
 set_permissions "$mtg_files/config.toml"
 
 

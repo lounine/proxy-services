@@ -1,6 +1,4 @@
 {"log":{
-  "loglevel": {{ if eq (getenv "DEBUG") "true" }} "debug" {{ else }} "warning" {{ end }},
-  "dnsLog": {{ getenv "DEBUG" "false" }},
-  "access": {{ if eq (getenv "DEBUG") "true" }} "/dev/stdout" {{ else }} "none" {{ end }},
-  "error": "/dev/stderr"
+  "loglevel": "{{ getenv "LOG_LEVEL" "warning" }}",
+  "access": {{ if eq (getenv "LOG_LEVEL") "debug" "info" }} "/dev/stdout" {{ else }} "none" {{ end }}
 }}
