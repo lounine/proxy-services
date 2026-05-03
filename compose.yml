@@ -27,6 +27,7 @@ services:
       - TZ=${TZ:-UTC}
     volumes:
       - /usr/local/share/proxy_services/xray/config/:/usr/local/etc/xray/:ro
+      - /var/log/xray/:/var/log/xray/
       
   mtg:
     image: nineseconds/mtg:2
