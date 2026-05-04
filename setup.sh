@@ -193,11 +193,11 @@ set_permissions "$haproxy_files/haproxy.cfg" 99 99    # haproxy user and group
 xray_files="$services_files/xray"
 [ -d "$xray_files" ] && rm -rf "$xray_files"
 install_dir "$xray_files"
-install_dir "$xray_files/config"
+install_dir "$xray_files/config" 65532 65532   # xray image user and group
 
 LOG_LEVEL=$LOG_LEVEL gomplate -c "$settings" -c "$users" \
               --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
-set_permissions "$xray_files/config"
+set_permissions "$xray_files/config" 65532 65532   # xray image user and group
 
 
 ############ Preparing MTG configuration ############

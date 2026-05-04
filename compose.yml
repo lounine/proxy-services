@@ -19,9 +19,7 @@ services:
 
   xray:
     container_name: xray
-    image: lounine/xray
-    build:
-      context: ./xray
+    image: ghcr.io/xtls/xray-core
     restart: unless-stopped
     environment:
       - TZ=${TZ:-UTC}
