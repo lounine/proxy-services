@@ -64,25 +64,25 @@ install -m 0755 -d "$services_files"
 
 #######################  INSTALLING SYSTEM PACKAGES  #######################
 
-if [ ! -f "$services_files"/-system-packages-installed ]; then
+if [ ! -f "$services_files"/.system-packages-installed ]; then
   echo "${nl}${bold}Installing system packages:${reset}"
 
   apt-get update
   apt-get install -y --no-install-recommends \
-    ca-certificates curl gnupg apache2-utils tree
+    ca-certificates gnupg apache2-utils tree
 
   echo "Installing gomplate:"
   curl -o /usr/local/bin/gomplate -#L \
       https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
   chmod 0755 /usr/local/bin/gomplate
 
-  touch "$services_files"/-system-packages-installed
+  touch "$services_files"/.system-packages-installed
 fi
 
 
 ###########################  INSTALLING DOCKER  ############################
 
-if [ ! -f "$services_files"/-docker-installed ]; then
+if [ ! -f "$services_files"/.docker-installed ]; then
   echo "${nl}${bold}Installing Docker:${reset}"
 
   REPO='https://download.docker.com/linux/ubuntu'
@@ -113,7 +113,7 @@ if [ ! -f "$services_files"/-docker-installed ]; then
   apt-get install -y --no-install-recommends \
     docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-  touch "$services_files"/-docker-installed
+  touch "$services_files"/.docker-installed
 fi
 
 
