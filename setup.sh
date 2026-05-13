@@ -196,7 +196,7 @@ if [ ! -f .gomplate.yaml ]; then
 		    url: ${NEXTHOP_CONFIG_URL:-file:///dev/null}
 		  params:
 		    url: .params.yaml
-      log:
+		  log:
 		    url: .log.yaml
 ____EOF
 
