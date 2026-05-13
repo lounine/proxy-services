@@ -196,11 +196,11 @@ if [ ! -f .gomplate.yaml ]; then
 		    url: ${NEXTHOP_CONFIG_URL:-file:///dev/null}
 		  params:
 		    url: .params.yaml
+      log:
+		    url: .log.yaml
 ____EOF
 
   > .params.yaml cat <<-____EOF
-		log:
-		  level: $LOG_LEVEL
 		nexthop:
 		  socks_proxy: ${NEXTHOP_SOCKS_PROXY:-''}
 		  xray:
@@ -210,6 +210,10 @@ ____EOF
   set_permissions .params.yaml 0 0
   set_permissions .gomplate.yaml 0 0
 fi
+
+  > .log.yaml cat <<-____EOF
+		level: $LOG_LEVEL
+____EOF
 
 rm -rf ./config; install -m 0755 -d ./config
 echo "${nl}${bold}Setting up services${reset}"

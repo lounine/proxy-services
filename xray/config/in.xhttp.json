@@ -15,7 +15,7 @@
     },
     "security": "reality",
     "realitySettings": {
-      "show": {{ eq .params.log.level "debug" }},
+      "show": {{ eq .log.level "debug" }},
       "target": "{{ .local.xray.xhttp.SNI }}:443",
       "serverNames": [ "{{ .local.xray.xhttp.SNI }}" ],
       "privateKey": "{{ .local.xray.reality.privateKey }}",

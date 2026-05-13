@@ -1,4 +1,4 @@
 {"log":{
-  "loglevel": "{{ .params.log.level }}",
-  "access": {{ if eq .params.log.level "debug" "info" }} "/dev/stdout" {{ else }} "none" {{ end }}
+  "loglevel": "{{ .log.level }}",
+  "access": {{ if eq .log.level "debug" "info" }} "/dev/stdout" {{ else }} "none" {{ end }}
 }}
