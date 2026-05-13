@@ -185,35 +185,35 @@ if [ ! -f .gomplate.yaml ]; then
     read NEXTHOP_XRAY_USER
   fi
 
-  > .gomplate.yaml cat <<-____EOF
-		missingKey: zero
-		context:
-		  local:
-		    url: $LOCAL_CONFIG_URL
-		  users:
-		    url: $USERS_URL
-		  nexthop:
-		    url: ${NEXTHOP_CONFIG_URL:-file:///dev/null}
-		  params:
-		    url: .params.yaml
-		  log:
-		    url: .log.yaml
-____EOF
+  > .gomplate.yaml cat << EOF
+missingKey: zero
+context:
+  local:
+    url: $LOCAL_CONFIG_URL
+  users:
+    url: $USERS_URL
+  nexthop:
+    url: ${NEXTHOP_CONFIG_URL:-file:///dev/null}
+  params:
+    url: .params.yaml
+  log:
+    url: .log.yaml
+EOF
 
-  > .params.yaml cat <<-____EOF
-		nexthop:
-		  socks_proxy: ${NEXTHOP_SOCKS_PROXY:-''}
-		  xray:
-		    user: ${NEXTHOP_XRAY_USER:-}
-____EOF
+  > .params.yaml cat << EOF
+nexthop:
+  socks_proxy: ${NEXTHOP_SOCKS_PROXY:-''}
+  xray:
+    user: ${NEXTHOP_XRAY_USER:-}
+EOF
 
   set_permissions .params.yaml 0 0
   set_permissions .gomplate.yaml 0 0
 fi
 
-  > .log.yaml cat <<-____EOF
-		level: $LOG_LEVEL
-____EOF
+  > .log.yaml cat << EOF
+level: $LOG_LEVEL
+EOF
 
 rm -rf ./config; install -m 0755 -d ./config
 echo "${nl}${bold}Setting up services${reset}"
