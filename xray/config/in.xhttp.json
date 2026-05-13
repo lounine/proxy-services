@@ -15,10 +15,10 @@
     },
     "security": "reality",
     "realitySettings": {
-      "show": {{ eq (getenv "LOG_LEVEL") "debug" }},
-      "target": "{{ .settings.xray.xhttp.SNI }}:443",
-      "serverNames": [ "{{ .settings.xray.xhttp.SNI }}" ],
-      "privateKey": "{{ .settings.xray.reality.privateKey }}",
+      "show": {{ eq .params.log.level "debug" }},
+      "target": "{{ .local.xray.xhttp.SNI }}:443",
+      "serverNames": [ "{{ .local.xray.xhttp.SNI }}" ],
+      "privateKey": "{{ .local.xray.reality.privateKey }}",
       "shortIds": [ "" ]
     }
   }

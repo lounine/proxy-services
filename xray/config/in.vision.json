@@ -12,10 +12,10 @@
     "network": "raw",
     "security": "reality",
     "realitySettings": {
-      "show": {{ eq (getenv "LOG_LEVEL") "debug" }}, 
-      "target": "{{ .settings.xray.vision.SNI }}:443",
-      "serverNames": [ "{{ .settings.xray.vision.SNI }}" ],
-      "privateKey": "{{ .settings.xray.reality.privateKey }}",
+      "show": {{ eq .params.log.level "debug" }}, 
+      "target": "{{ .local.xray.vision.SNI }}:443",
+      "serverNames": [ "{{ .local.xray.vision.SNI }}" ],
+      "privateKey": "{{ .local.xray.reality.privateKey }}",
       "shortIds": [ "" ]
     }
   }

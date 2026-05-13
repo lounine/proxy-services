@@ -1,4 +1,4 @@
 {"log":{
-  "loglevel": "{{ getenv "LOG_LEVEL" "warning" }}",
-  "access": {{ if eq (getenv "LOG_LEVEL") "debug" "info" }} "/dev/stdout" {{ else }} "none" {{ end }}
+  "loglevel": "{{ .params.log.level }}",
+  "access": {{ if eq .params.log.level "debug" "info" }} "/dev/stdout" {{ else }} "none" {{ end }}
 }}

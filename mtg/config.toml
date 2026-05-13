@@ -13,12 +13,12 @@
 # Debug starts application in debug mode. It starts to be quite verbose
 # in output. Actually, the idea is that you run it in debug mode only if
 # you have any issue.
-debug = {{ eq (getenv "LOG_LEVEL") "debug" }}
+debug = {{ eq .params.log.level "debug" }}
 
 # A secret. Please remember that mtg supports only FakeTLS mode, legacy
 # simple and secured mode are prohibited. For you it means that secret
 # should either be base64-encoded or starts with ee.
-secret = "{{ .settings.telegram.secret }}"
+secret = "{{ .local.telegram.secret }}"
 
 # Host:port pair to run proxy on.
 bind-to = "0.0.0.0:443"
@@ -197,7 +197,7 @@ dns = "https://1.1.1.1"
 # see, you can specify some parameters in GET query. These parameters
 # configure circuit breaker.
 proxies = [
-    # "socks5://user:password@host:port"
+    {{ .params.nexthop.socks_proxy }}
 ]
 
 # network timeouts define different settings for timeouts. tcp timeout

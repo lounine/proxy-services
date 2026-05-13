@@ -58,31 +58,33 @@ fi
 ARCH=$(dpkg --print-architecture)
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-services_files='/usr/local/share/proxy_services'
-install -m 0755 -d "$services_files"
+install -m 0755 -d '/usr/local/share/proxy_services'
+cd '/usr/local/share/proxy_services'
+install -m 0755 -d './template'
+install -m 0755 -d './config'
 
 
 #######################  INSTALLING SYSTEM PACKAGES  #######################
 
-if [ ! -f "$services_files"/.system-packages-installed ]; then
+if [ ! -f ".installed-system-packages ]; then
   echo "${nl}${bold}Installing system packages:${reset}"
 
   apt-get update
   apt-get install -y --no-install-recommends \
-    ca-certificates gnupg apache2-utils tree
+    curl unzip ca-certificates gnupg apache2-utils tree
 
   echo "Installing gomplate:"
   curl -o /usr/local/bin/gomplate -#L \
       https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
   chmod 0755 /usr/local/bin/gomplate
 
-  touch "$services_files"/.system-packages-installed
+  touch ".installed-system-packages"
 fi
 
 
 ###########################  INSTALLING DOCKER  ############################
 
-if [ ! -f "$services_files"/.docker-installed ]; then
+if [ ! -f ".installed-docker" ]; then
   echo "${nl}${bold}Installing Docker:${reset}"
 
   REPO='https://download.docker.com/linux/ubuntu'
@@ -113,8 +115,25 @@ if [ ! -f "$services_files"/.docker-installed ]; then
   apt-get install -y --no-install-recommends \
     docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-  touch "$services_files"/.docker-installed
+  touch ".installed-docker
 fi
+
+
+##########################  DOWNLOADING CONFIGS  ###########################
+
+echo "${nl}${bold}Downloading latest configs:${reset}"
+
+TEMP_DIR=$(mktemp -d)
+[ -d "$TEMP_DIR" ] || { echo "Could not create temp dir"; exit 1; }
+cleanup() { rm -rf "$TEMP_DIR"; };    trap cleanup EXIT
+
+curl -o "$TEMP_DIR/sources.zip" \
+     -L https://github.com/lounine/proxy-services/archive/refs/heads/main.zip
+unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
+mv "$TEMP_DIR/proxy-services-main/compose.yml" .
+mv "$TEMP_DIR/proxy-services-main/haproxy" ./template/haproxy
+mv "$TEMP_DIR/proxy-services-main/mtg" ./template/mtg
+mv "$TEMP_DIR/proxy-services-main/xray" ./template/xray
 
 
 ##########################  SETTING UP SERVICES  ###########################
@@ -153,76 +172,93 @@ install_dir() {
 
 ################# Getting settings ##################
 
-if [ ! -f "$services_files/settings.url" ]; then
-  echo "${bold}Provide settings file url:${reset}"
-  read SETTINGS_URL
+if [ ! -f .gomplate.yaml ]; then
+  echo "${bold}Provide config file url:${reset}"
+  read LOCAL_CONFIG_URL
 
-  echo -n ${SETTINGS_URL} > "$services_files/settings.url"
-  set_permissions "$services_files/settings.url" 0 0
-fi
-
-if [ ! -f "$services_files/users.url" ]; then
-  echo "${bold}Provide users file url (leave blank to use settings file):${reset}"
+  echo "${bold}Provide users file url (leave blank to use config file):${reset}"
   read USERS_URL
+  [ -n "$USERS_URL" ] || USERS_URL="$LOCAL_CONFIG_URL"
 
-  if [ -n "$USERS_URL" ]; then
-    echo -n ${USERS_URL} > "$services_files/users.url"
-    set_permissions "$services_files/users.url" 0 0
-  else
-    cp "$services_files/settings.url" "$services_files/users.url"
+  echo "${bold}Provide config file url for netxhop xray (leave blank to skip):${reset}"
+  read NEXTHOP_CONFIG_URL
+  
+  if [ -n "$NEXTHOP_CONFIG_URL" ]; then
+    NEXTHOP_SOCKS_PROXY='socks5://xray:1080'
+    echo "${bold}Provide user ID (secret) from the netxhop xray:${reset}"
+    read NEXTHOP_XRAY_USER
   fi
-fi
 
-settings=settings="$(cat "$services_files/settings.url")"
-users=users="$(cat "$services_files/users.url")"
+  > .gomplate.yaml cat <<-____EOF
+		missingKey: zero
+		context:
+		  local:
+		    url: $LOCAL_CONFIG_URL
+		  users:
+		    url: $USERS_URL
+		  nexthop:
+		    url: ${NEXTHOP_CONFIG_URL:-file:///dev/null}
+		  params:
+		    url: .params.yaml
+____EOF
+
+  > .params.yaml cat <<-____EOF
+		log:
+		  level: $LOG_LEVEL
+		nexthop:
+		  socks_proxy: ${NEXTHOP_SOCKS_PROXY:-\'\'}
+		  xray:
+		    user: ${NEXTHOP_XRAY_USER}
+____EOF
+
+  set_permissions .params.yaml 0 0
+  set_permissions .gomplate.yaml 0 0
+fi
 
 
 ########## Preparing HAProxy configuration ##########
 
-haproxy_files="$services_files/haproxy"
-[ -d "$haproxy_files" ] && rm -rf "$haproxy_files"
-install_dir "$haproxy_files"
+[ -d ./config/haproxy ] && rm -rf ./config/haproxy
+install_dir ./config/haproxy
 
-cat "$DIR/haproxy/haproxy.cfg" | \
-  LOG_LEVEL=$LOG_LEVEL gomplate -c "$settings" > "$haproxy_files/haproxy.cfg"
-set_permissions "$haproxy_files/haproxy.cfg" 99 99    # haproxy user and group
+> ./config/haproxy/haproxy.cfg gomplate < ./template/haproxy/haproxy.cfg
+set_permissions ./config/haproxy/haproxy.cfg 99 99    # haproxy user and group
 
 
 ########### Preparing Xray configuration ############
 
-xray_files="$services_files/xray"
-[ -d "$xray_files" ] && rm -rf "$xray_files"
-install_dir "$xray_files"
-install_dir "$xray_files/config" 65532 65532   # xray image user and group
+[ -d ./config/xray ] && rm -rf ./config/xray
+install_dir ./config/xray
+install_dir ./config/xray/config 65532 65532   # xray image user and group
 
-LOG_LEVEL=$LOG_LEVEL gomplate -c "$settings" -c "$users" \
-              --input-dir "$DIR/xray/config" --output-dir "$xray_files/config"
-set_permissions "$xray_files/config" 65532 65532   # xray image user and group
+gomplate --input-dir ./template/xray/config --output-dir ./config/xray/config
+if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
+  gomplate --input-dir ./template/xray/config-nexthop --output-dir ./config/xray/config
+fi
+set_permissions ./config/xray/config 65532 65532   # xray image user and group
 
 
 ############ Preparing MTG configuration ############
 
-mtg_files="$services_files/mtg"
-[ -d "$mtg_files" ] && rm -rf "$mtg_files"
-install_dir "$mtg_files"
+[ -d ./config/mtg ] && rm -rf ./config/mtg
+install_dir ./config/mtg
 
-cat "$DIR/mtg/config.toml" | \
-  LOG_LEVEL=$LOG_LEVEL gomplate -c "$settings" > "$mtg_files/config.toml"
-set_permissions "$mtg_files/config.toml"
+> ./config/mtg/config.toml gomplate < ./template/mtg/config.toml
+set_permissions ./config/mtg/config.toml
 
 
 ################# All configs ready #################
 
 echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
-tree -a --dirsfirst $services_files
+tree -a --dirsfirst ./config
 
 echo "${nl}${bold}Telegram proxy status:${reset}"
-docker run --rm -v "$mtg_files/config.toml:/config/config.toml" \
+docker run --rm -v ./config/mtg/config.toml:/config/config.toml \
   nineseconds/mtg:2 doctor /config/config.toml || : # Ignore errors
 
 
 ###########################  STARTING SERVICES  ############################
 
 echo "${nl}${bold}Starting up services:${reset}"
-docker compose --file "$DIR/compose.yml" up --detach
+docker compose up --detach
 docker compose restart

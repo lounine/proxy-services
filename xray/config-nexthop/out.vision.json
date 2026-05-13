@@ -1,0 +1,21 @@
+{"outbounds":[{
+  "tag": "vision",
+  "protocol": "vless",
+  "settings": {
+    "vnext": [{
+      "address": "{{ .local.address }}",
+      "port": {{ .local.port }},
+      "users": [{{ .params.nexthop.xray.user | 
+        jq `{id:., encryption:"none", flow:"xtls-rprx-vision"}` | toJSON }}]
+    }]
+  },
+  "streamSettings": {
+    "network": "raw",
+    "security": "reality",
+    "realitySettings": {
+      "fingerprint": "chrome", 
+      "serverName": "{{ .nexthop.xray.vision.SNI }}",
+      "publicKey": "{{ .nexthop.xray.reality.publicKey }}"
+    }
+  }
+}]}

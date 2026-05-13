@@ -1,0 +1,25 @@
+{"outbounds":[{
+  "tag": "xhttp.packet-up",
+  "protocol": "vless",
+  "settings": {
+    "vnext": [{
+      "address": "{{ .local.address }}",
+      "port": {{ .local.port }},
+      "users": [{{ .params.nexthop.xray.user |
+        jq `{id:., encryption:"none"}` | toJSON }}]
+    }]
+  },
+  "streamSettings": {
+    "network": "xhttp",
+    "xhttpSettings": {
+      "path": "/api/v1/id/",
+      "mode": "packet-up"
+    },
+    "security": "reality",
+    "realitySettings": {
+      "fingerprint": "chrome", 
+      "serverName": "{{ .nexthop.xray.xhttp.SNI }}",
+      "publicKey": "{{ .nexthop.xray.reality.publicKey }}"
+    }
+  }
+}]}
