@@ -65,7 +65,7 @@ cd '/usr/local/share/proxy_services'
 #######################  INSTALLING SYSTEM PACKAGES  #######################
 
 if [ ! -f .installed-system-packages ]; then
-  echo "${nl}${bold}Installing system packages:${reset}"
+  echo "${nl}${bold}Installing system packages${reset}"
 
   apt-get update
   apt-get install -y --no-install-recommends \
@@ -73,7 +73,7 @@ if [ ! -f .installed-system-packages ]; then
 
   echo "Installing gomplate:"
   curl -o /usr/local/bin/gomplate \
-       -#L https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
+       -fsSL https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
   chmod 0755 /usr/local/bin/gomplate
 
   touch .installed-system-packages
@@ -83,7 +83,7 @@ fi
 ###########################  INSTALLING DOCKER  ############################
 
 if [ ! -f .installed-docker ]; then
-  echo "${nl}${bold}Installing Docker:${reset}"
+  echo "${nl}${bold}Installing Docker${reset}"
 
   REPO='https://download.docker.com/linux/ubuntu'
   DOCKER_GPG='/etc/apt/keyrings/docker.gpg'
@@ -119,14 +119,14 @@ fi
 
 ##########################  DOWNLOADING CONFIGS  ###########################
 
-echo "${nl}${bold}Downloading latest configs:${reset}"
+echo "${nl}${bold}Downloading latest configs${reset}"
 
 TEMP_DIR=$(mktemp -d)
 [ -d "$TEMP_DIR" ] || { echo "Could not create temp dir"; exit 1; }
 cleanup() { rm -rf "$TEMP_DIR"; };    trap cleanup EXIT
 
 curl -o "$TEMP_DIR/sources.zip" \
-     -#L https://github.com/lounine/proxy-services/archive/refs/heads/main.zip
+     -fsSL https://github.com/lounine/proxy-services/archive/refs/heads/main.zip
 unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
 mv "$TEMP_DIR/proxy-services-main/compose.yml" .
 rm -rf ./template; install -m 0755 -d ./template
@@ -136,8 +136,6 @@ mv "$TEMP_DIR/proxy-services-main/xray" ./template/xray
 
 
 ##########################  SETTING UP SERVICES  ###########################
-
-echo "${nl}${bold}Setting up services:${reset}"
 
 DEFAULT_OWNER=1000              # Owned and accessed by eventual container mock user and group
 DEFAULT_GROUP=1000              
@@ -168,23 +166,22 @@ install_dir() {
   install -m $permissions -o $owner -g $group -d "$path"
 }
 
-
 ################# Getting settings ##################
 
 if [ ! -f .gomplate.yaml ]; then
-  echo "${bold}Provide config file url:${reset}"
+  echo "${blue}Provide config file url:${reset}"
   read LOCAL_CONFIG_URL
 
-  echo "${bold}Provide users file url (leave blank to use config file):${reset}"
+  echo "${blue}Provide users file url (leave blank to use config file):${reset}"
   read USERS_URL
   [ -n "$USERS_URL" ] || USERS_URL="$LOCAL_CONFIG_URL"
 
-  echo "${bold}Provide config file url for netxhop xray (leave blank to skip):${reset}"
+  echo "${blue}Provide config file url for netxhop xray (leave blank to skip):${reset}"
   read NEXTHOP_CONFIG_URL
   
   if [ -n "$NEXTHOP_CONFIG_URL" ]; then
     NEXTHOP_SOCKS_PROXY='socks5://xray:1080'
-    echo "${bold}Provide user ID (secret) from the netxhop xray:${reset}"
+    echo "${blue}Provide user ID (secret) from the netxhop xray:${reset}"
     read NEXTHOP_XRAY_USER
   fi
 
@@ -205,7 +202,7 @@ ____EOF
 		log:
 		  level: $LOG_LEVEL
 		nexthop:
-		  socks_proxy: ${NEXTHOP_SOCKS_PROXY:-\'\'}
+		  socks_proxy: ${NEXTHOP_SOCKS_PROXY:-''}
 		  xray:
 		    user: ${NEXTHOP_XRAY_USER:-}
 ____EOF
@@ -214,9 +211,8 @@ ____EOF
   set_permissions .gomplate.yaml 0 0
 fi
 
-
 rm -rf ./config; install -m 0755 -d ./config
-
+echo "${nl}${bold}Setting up services${reset}"
 
 ########## Preparing HAProxy configuration ##########
 
@@ -251,7 +247,7 @@ set_permissions ./config/mtg/config.toml
 
 ################# All configs ready #################
 
-echo "${nl}${bold}All secrets have been set up. Current file structure:${reset}"
+echo "${nl}${bold}All configs have been set up. Current file structure:${reset}"
 tree -a --dirsfirst ./config
 
 echo "${nl}${bold}Telegram proxy status:${reset}"

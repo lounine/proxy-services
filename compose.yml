@@ -12,7 +12,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
     volumes:
-      - /usr/local/share/proxy_services/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - /usr/local/share/proxy_services/config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     depends_on: # Haproxy resolves backend IPs on start – they must be up by then
       - xray
       - mtg
@@ -24,7 +24,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
     volumes:
-      - /usr/local/share/proxy_services/xray/config/:/usr/local/etc/xray/:ro
+      - /usr/local/share/proxy_services/config/xray/config/:/usr/local/etc/xray/:ro
       
   mtg:
     image: nineseconds/mtg:2
@@ -33,4 +33,4 @@ services:
     environment:
       - TZ=${TZ:-UTC}
     volumes:
-      - /usr/local/share/proxy_services/mtg/config.toml:/config/config.toml:ro
+      - /usr/local/share/proxy_services/config/mtg/config.toml:/config/config.toml:ro
