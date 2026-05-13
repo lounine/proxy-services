@@ -60,8 +60,6 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 install -m 0755 -d '/usr/local/share/proxy_services'
 cd '/usr/local/share/proxy_services'
-install -m 0755 -d './template'
-install -m 0755 -d './config'
 
 
 #######################  INSTALLING SYSTEM PACKAGES  #######################
@@ -128,9 +126,10 @@ TEMP_DIR=$(mktemp -d)
 cleanup() { rm -rf "$TEMP_DIR"; };    trap cleanup EXIT
 
 curl -o "$TEMP_DIR/sources.zip" \
-     -L https://github.com/lounine/proxy-services/archive/refs/heads/main.zip
+     -#L https://github.com/lounine/proxy-services/archive/refs/heads/main.zip
 unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
 mv "$TEMP_DIR/proxy-services-main/compose.yml" .
+rm -rf ./template; install -m 0755 -d ./template
 mv "$TEMP_DIR/proxy-services-main/haproxy" ./template/haproxy
 mv "$TEMP_DIR/proxy-services-main/mtg" ./template/mtg
 mv "$TEMP_DIR/proxy-services-main/xray" ./template/xray
@@ -208,12 +207,15 @@ ____EOF
 		nexthop:
 		  socks_proxy: ${NEXTHOP_SOCKS_PROXY:-\'\'}
 		  xray:
-		    user: ${NEXTHOP_XRAY_USER}
+		    user: ${NEXTHOP_XRAY_USER:-}
 ____EOF
 
   set_permissions .params.yaml 0 0
   set_permissions .gomplate.yaml 0 0
 fi
+
+
+rm -rf ./config; install -m 0755 -d ./config
 
 
 ########## Preparing HAProxy configuration ##########
