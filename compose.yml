@@ -8,9 +8,7 @@ services:
     restart: unless-stopped
     ports:
       - 80:80
-      - 443:443
-    environment:
-      - TZ=${TZ:-UTC}
+      - ${EXTERNAL_PORT:-443}:443
     volumes:
       - /usr/local/share/proxy_services/config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     depends_on: # Haproxy resolves backend IPs on start – they must be up by then
@@ -21,8 +19,6 @@ services:
     container_name: xray
     image: ghcr.io/xtls/xray-core
     restart: unless-stopped
-    environment:
-      - TZ=${TZ:-UTC}
     volumes:
       - /usr/local/share/proxy_services/config/xray/config/:/usr/local/etc/xray/:ro
       
@@ -30,7 +26,5 @@ services:
     image: nineseconds/mtg:2
     container_name: mtg
     restart: unless-stopped
-    environment:
-      - TZ=${TZ:-UTC}
     volumes:
       - /usr/local/share/proxy_services/config/mtg/config.toml:/config/config.toml:ro

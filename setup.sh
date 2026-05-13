@@ -211,8 +211,12 @@ EOF
   set_permissions .gomplate.yaml 0 0
 fi
 
-  > .log.yaml cat << EOF
+> .log.yaml cat << EOF
 level: $LOG_LEVEL
+EOF
+
+> .env gomplate << EOF
+EXTERNAL_PORT={{ .local.port }}
 EOF
 
 rm -rf ./config; install -m 0755 -d ./config
