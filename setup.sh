@@ -267,7 +267,7 @@ set_permissions ./config/mtg/config.toml
 
 ################# All configs ready #################
 
-echo "${nl}${bold}All configs have been set up. Current file structure:${reset}"
+echo "${nl}${bold}All service configs ready:${reset}"
 tree -a --dirsfirst ./config
 
 
