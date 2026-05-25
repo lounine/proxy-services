@@ -274,10 +274,6 @@ set_permissions ./config/mtg/config.toml
 echo "${nl}${bold}All configs have been set up. Current file structure:${reset}"
 tree -a --dirsfirst ./config
 
-echo "${nl}${bold}Telegram proxy status:${reset}"
-docker run --rm -v ./config/mtg/config.toml:/config/config.toml \
-  nineseconds/mtg:2 doctor /config/config.toml || : # Ignore errors
-
 
 ###########################  STARTING SERVICES  ############################
 
