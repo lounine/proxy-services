@@ -2,8 +2,10 @@
   {
     "tag": "internet",
     "protocol": "freedom",
-    "settings": {
-      "domainStrategy": "ForceIPv4"
+    "streamSettings": {
+      "sockopt" : {
+        "domainStrategy": "ForceIPv4"
+      }
     }
   },
   {
