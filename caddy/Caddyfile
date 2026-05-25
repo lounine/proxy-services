@@ -11,7 +11,12 @@
 {{ join .local.xray.xhttp.domains ", "}},
 {{ .params.telegram.domain }} {
   header -Server      # don't reveal we are using caddy
-  respond not path /.well-known/acme-challenge/* "Access denied" 403 {
+
+  @not_acme {
+		not path /.well-known/acme-challenge/*
+	}
+
+  respond @not_acme "Access denied" 403 {
     close
   }
 }
