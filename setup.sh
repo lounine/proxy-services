@@ -222,6 +222,11 @@ level: $LOG_LEVEL
 EOF
 set_permissions .log.yaml 0 0
 
+> .env gomplate << EOF
+EXTERNAL_PORT={{ .local.port }}
+EOF
+set_permissions .env 0 0
+
 echo "${nl}${bold}Setting up services${reset}"
 
 rm -rf ./config; install -m 0755 -d ./config
