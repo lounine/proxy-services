@@ -187,9 +187,6 @@ if [ ! -f .gomplate.yaml ]; then
     read NEXTHOP_XRAY_USER
   fi
 
-  TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
-  TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | basenc -d --base64url 2>/dev/null | dd bs=1 skip=17 2>/dev/null)
-
   > .gomplate.yaml cat << EOF
 missingKey: zero
 context:
@@ -204,6 +201,9 @@ context:
   log:
     url: .log.yaml
 EOF
+
+  TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
+  TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | basenc -d --base64url 2>/dev/null | dd bs=1 skip=17 2>/dev/null)
 
   > .params.yaml cat << EOF
 nexthop:
@@ -220,10 +220,6 @@ fi
 
 > .log.yaml cat << EOF
 level: $LOG_LEVEL
-EOF
-
-> .env gomplate << EOF
-EXTERNAL_PORT={{ .local.port }}
 EOF
 
 rm -rf ./config; install -m 0755 -d ./config
