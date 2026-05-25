@@ -201,11 +201,13 @@ context:
   log:
     url: .log.yaml
 EOF
+  set_permissions .gomplate.yaml 0 0
+fi
 
-  TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
-  TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | basenc -d --base64url 2>/dev/null | dd bs=1 skip=17 2>/dev/null)
+TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
+TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | basenc -d --base64url 2>/dev/null | dd bs=1 skip=17 2>/dev/null)
 
-  > .params.yaml cat << EOF
+> .params.yaml cat << EOF
 nexthop:
   socks_proxy: ${NEXTHOP_SOCKS_PROXY:-''}
   xray:
@@ -213,18 +215,16 @@ nexthop:
 telegram:
   domain: ${TELEGRAM_SNI:-}
 EOF
-
-  set_permissions .params.yaml 0 0
-  set_permissions .gomplate.yaml 0 0
-fi
+set_permissions .params.yaml 0 0
 
 > .log.yaml cat << EOF
 level: $LOG_LEVEL
 EOF
+set_permissions .log.yaml 0 0
 
-rm -rf ./config; install -m 0755 -d ./config
 echo "${nl}${bold}Setting up services${reset}"
 
+rm -rf ./config; install -m 0755 -d ./config
 
 ########## Preparing HAProxy configuration ##########
 
