@@ -1,0 +1,14 @@
+{
+  admin off
+{{- if eq .log.level "debug" }}
+  debug 
+{{- end }}
+}
+
+{{ join .local.xray.vision.domains ", "}},
+{{ join .local.xray.xhttp.domains ", "}},
+{{ .params.telegram.domain }} {
+  respond "Access denied" 403 {
+    close
+  }
+}

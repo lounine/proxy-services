@@ -117,7 +117,7 @@ allow-fallback-on-unknown-dc = false
 # used for SNI in the TLS handshake.
 #
 # default value is not set (DNS resolution is used).
-# ip = "10.10.10.11"
+ip = "172.31.0.10"
 
 # FakeTLS uses domain fronting protection. So it needs to know a port to
 # access. Default value is 443

@@ -16,8 +16,11 @@
     "security": "reality",
     "realitySettings": {
       "show": {{ eq .log.level "debug" }},
-      "target": "{{ .local.xray.xhttp.SNI }}:443",
-      "serverNames": [ "{{ .local.xray.xhttp.SNI }}" ],
+      "target": "172.31.0.10:443",
+      "serverNames": [ 
+{{- range $i, $domain := .local.xray.xhttp.domains}}
+{{- if $i }},{{ end }} {{ $domain | quote }}
+{{- end }} ],
       "privateKey": "{{ .local.xray.reality.privateKey }}",
       "shortIds": [ "" ]
     }

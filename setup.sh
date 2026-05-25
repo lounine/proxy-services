@@ -125,14 +125,15 @@ TEMP_DIR=$(mktemp -d)
 [ -d "$TEMP_DIR" ] || { echo "Could not create temp dir"; exit 1; }
 cleanup() { rm -rf "$TEMP_DIR"; };    trap cleanup EXIT
 
+BRANCH_NAME='self-steal'
 curl -o "$TEMP_DIR/sources.zip" \
-     -fsSL https://github.com/lounine/proxy-services/archive/refs/heads/main.zip
+     -fsSL https://github.com/lounine/proxy-services/archive/refs/heads/$BRANCH_NAME.zip
 unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
-mv "$TEMP_DIR/proxy-services-main/compose.yml" .
+mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/compose.yml" .
 rm -rf ./template; install -m 0755 -d ./template
-mv "$TEMP_DIR/proxy-services-main/haproxy" ./template/haproxy
-mv "$TEMP_DIR/proxy-services-main/mtg" ./template/mtg
-mv "$TEMP_DIR/proxy-services-main/xray" ./template/xray
+mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/haproxy" ./template/haproxy
+mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/mtg" ./template/mtg
+mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
 
 
 ##########################  SETTING UP SERVICES  ###########################
@@ -205,6 +206,8 @@ nexthop:
   socks_proxy: ${NEXTHOP_SOCKS_PROXY:-''}
   xray:
     user: ${NEXTHOP_XRAY_USER:-}
+telegram:
+  domain: ${TELEGRAM_SNI:-}
 EOF
 
   set_permissions .params.yaml 0 0
@@ -222,6 +225,7 @@ EOF
 rm -rf ./config; install -m 0755 -d ./config
 echo "${nl}${bold}Setting up services${reset}"
 
+
 ########## Preparing HAProxy configuration ##########
 
 [ -d ./config/haproxy ] && rm -rf ./config/haproxy
@@ -229,6 +233,14 @@ install_dir ./config/haproxy
 
 > ./config/haproxy/haproxy.cfg gomplate < ./template/haproxy/haproxy.cfg
 set_permissions ./config/haproxy/haproxy.cfg 99 99    # haproxy user and group
+
+
+########### Preparing Caddy configuration ###########
+
+[ -d ./config/caddy ] && rm -rf ./config/caddy
+install_dir ./config/caddy
+
+> ./config/caddy/Caddyfile gomplate < ./template/caddy/Caddyfile
 
 
 ########### Preparing Xray configuration ############
