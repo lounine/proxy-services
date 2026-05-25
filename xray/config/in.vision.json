@@ -15,7 +15,7 @@
       "show": {{ eq .log.level "debug" }},
       "target": "172.31.0.10:443",
       "serverNames": [ 
-{{- range $i, $domain := .local.xray.xhttp.domains}}
+{{- range $i, $domain := .local.xray.vision.domains}}
 {{- if $i }},{{ end }} {{ $domain | quote }}
 {{- end }} ],
       "privateKey": "{{ .local.xray.reality.privateKey }}",
