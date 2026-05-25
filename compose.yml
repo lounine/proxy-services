@@ -13,7 +13,7 @@ services:
       - /usr/local/share/proxy_services/config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     networks:
       lan:
-        ipv4_address: 172.31.0.2
+        ipv4_address: 172.22.0.2
 
   caddy:
     image: caddy:2
@@ -23,7 +23,7 @@ services:
       - /usr/local/share/proxy_services/config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
       lan:
-        ipv4_address: 172.31.0.10
+        ipv4_address: 172.22.0.10
 
   xray:
     container_name: xray
@@ -33,7 +33,7 @@ services:
       - /usr/local/share/proxy_services/config/xray/config/:/usr/local/etc/xray/:ro
     networks:
       lan:
-        ipv4_address: 172.31.0.11
+        ipv4_address: 172.22.0.11
       
   mtg:
     image: nineseconds/mtg:2
@@ -43,12 +43,12 @@ services:
       - /usr/local/share/proxy_services/config/mtg/config.toml:/config/config.toml:ro
     networks:
       lan:
-        ipv4_address: 172.31.0.12
+        ipv4_address: 172.22.0.12
 
 networks:
   lan:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.31.0.0/16
-          gateway: 172.31.0.1
+        - subnet: 172.22.0.0/16
+          gateway: 172.22.0.1

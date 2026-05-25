@@ -16,7 +16,7 @@
     "security": "reality",
     "realitySettings": {
       "show": {{ eq .log.level "debug" }},
-      "target": "172.31.0.10:443",
+      "target": "172.22.0.10:443",
       "serverNames": [ 
 {{- range $i, $domain := .local.xray.xhttp.domains}}
 {{- if $i }},{{ end }} {{ $domain | quote }}
