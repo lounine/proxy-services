@@ -1,8 +1,10 @@
 {
   admin off
-{{- if eq .log.level "debug" }}
-  debug 
-{{- end }}
+  log default {
+    level {{ if eq .log.level "warning" -}} WARN {{- else }}{{ strings.ToUpper .log.level }}{{ end }}  
+    output stdout
+    format console
+  }
 }
 
 {{ join .local.xray.vision.domains ", "}},
