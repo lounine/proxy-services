@@ -132,6 +132,7 @@ unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/compose.yml" .
 rm -rf ./template; install -m 0755 -d ./template
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/haproxy" ./template/haproxy
+mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/caddy" ./template/caddy
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/mtg" ./template/mtg
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
 
@@ -185,6 +186,9 @@ if [ ! -f .gomplate.yaml ]; then
     echo "${blue}Provide user ID (secret) from the netxhop xray:${reset}"
     read NEXTHOP_XRAY_USER
   fi
+
+  TELEGRAM_SECRET=$(gomplate -c 'local=./servers/nur-1.yaml' --in '{{ .local.telegram.secret }}')
+  TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | basenc -d --base64url 2>/dev/null | dd bs=1 skip=17 2>/dev/null)
 
   > .gomplate.yaml cat << EOF
 missingKey: zero
