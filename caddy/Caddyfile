@@ -13,7 +13,9 @@
   header -Server      # don't reveal we are using caddy
 
   tls {
-    disable_tlsalpn_challenge      # wouldn't work behind a CDN anyway
+    issuer acme {
+      disable_tlsalpn_challenge      # wouldn't work behind a CDN anyway
+    }
   }
 
   respond "Access denied" 403 {
