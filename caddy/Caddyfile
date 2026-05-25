@@ -12,11 +12,11 @@
 {{ .params.telegram.domain }} {
   header -Server      # don't reveal we are using caddy
 
-  @not_acme {
-		not path /.well-known/acme-challenge/*
-	}
+  tls {
+    disable_tlsalpn_challenge      # wouldn't work behind a CDN anyway
+  }
 
-  respond @not_acme "Access denied" 403 {
+  respond "Access denied" 403 {
     close
   }
 }
