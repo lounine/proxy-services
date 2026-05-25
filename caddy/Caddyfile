@@ -10,7 +10,7 @@
 
 :80 {
   header -Server      # don't reveal we are using caddy
-  redir https://{host}{uri} permanent
+  redir https://{host}{uri} 308
 }
 
 {{ join .local.xray.vision.domains ", "}},
