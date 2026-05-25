@@ -1,10 +1,16 @@
 {
   admin off
+  auto_https disable_redirects    # impossible to get rid of "Server: Caddy" header with automatic redirects
   log default {
     level {{ if eq .log.level "warning" -}} WARN {{- else }}{{ strings.ToUpper .log.level }}{{ end }}  
     output stdout
     format console
   }
+}
+
+:80 {
+  header -Server      # don't reveal we are using caddy
+  redir https://{host}{uri} permanent
 }
 
 {{ join .local.xray.vision.domains ", "}},
