@@ -23,10 +23,10 @@
     }
   }
 
-  @xhttp_path path {{ .local.xray.xhttp.path }}
+  @xhttp_path path {{ .local.xray.xhttp.path }}/*
 
   @no_specific_match {
-    not path {{ .local.xray.xhttp.path }}
+    not path {{ .local.xray.xhttp.path }}/*
   }
 
   reverse_proxy @xhttp_path 172.22.0.11:2443
