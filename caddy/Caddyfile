@@ -23,9 +23,15 @@
     }
   }
 
-  reverse_proxy {{ .local.xray.xhttp.path }} 172.22.0.11:2443
+  @xhttp_path path {{ .local.xray.xhttp.path }}
 
-  respond "Access denied" 403 {
+  @no_specific_match {
+    not path {{ .local.xray.xhttp.path }}
+  }
+
+  reverse_proxy @xhttp_path 172.22.0.11:2443
+
+  respond @no_specific_match "Access denied" 403 {
     close
   }
 }
