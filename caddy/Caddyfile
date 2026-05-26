@@ -6,6 +6,10 @@
     output stdout
     format console
   }
+
+  servers {
+    protocols h1 h2               # Exclude http/3 and do not bind to udp/443
+  }
 }
 
 :80 {
@@ -31,7 +35,7 @@
 
   reverse_proxy @xhttp_path {
     to 172.22.0.11:2443
-    
+
     transport http {
       versions 2 
     }
