@@ -12,6 +12,13 @@
     "network": "xhttp",
     "xhttpSettings": {
       "path": "{{ .local.xray.xhttp.path }}"
+    },
+    "security": "tls",
+    "tlsSettings": {
+      "certificates": [{
+        "certificateFile": "/usr/local/share/certs/fullchain.cer",
+        "keyFile": "/usr/local/share/certs/private.key"
+      }]
     }
   }
 }]}

@@ -31,6 +31,7 @@ services:
     restart: unless-stopped
     volumes:
       - /usr/local/share/proxy_services/config/xray/config/:/usr/local/etc/xray/:ro
+      - /usr/local/share/proxy_services/certs/:/usr/local/share/certs/:ro
     networks:
       lan:
         ipv4_address: 172.22.0.11
