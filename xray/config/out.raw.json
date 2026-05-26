@@ -1,12 +1,7 @@
 {"outbounds":[
   {
     "tag": "internet",
-    "protocol": "freedom",
-    "streamSettings": {
-      "sockopt" : {
-        "domainStrategy": "ForceIPv4"
-      }
-    }
+    "protocol": "freedom"
   },
   {
     "tag": "block",

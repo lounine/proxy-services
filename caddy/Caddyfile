@@ -13,9 +13,8 @@
   redir https://{host}{uri} 308
 }
 
-{{ join .local.xray.vision.domains ", "}},
-{{ join .local.xray.xhttp.domains ", "}},
-{{ .params.telegram.domain }} {
+{{ .local.xray.reality.domain }}, {{ .params.telegram.domain }}
+{{ .local.xray.xhttp.domain }}, {{ .local.xray.xhttp.cdn_domain }} {
   header -Server      # don't reveal we are using caddy
 
   tls {
@@ -23,6 +22,8 @@
       disable_tlsalpn_challenge      # wouldn't work behind a CDN anyway
     }
   }
+
+  reverse_proxy {{ .local.xray.xhttp.path }} 172.22.0.11:2443
 
   respond "Access denied" 403 {
     close

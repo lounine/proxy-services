@@ -1,5 +1,5 @@
 {"inbounds":[{
-  "tag": "vision",
+  "tag": "reality",
   "listen": "0.0.0.0",
   "port": 1443,
   "protocol": "vless",
@@ -14,10 +14,7 @@
     "realitySettings": {
       "show": {{ eq .log.level "debug" }},
       "target": "172.22.0.10:443",
-      "serverNames": [ 
-{{- range $i, $domain := .local.xray.vision.domains}}
-{{- if $i }},{{ end }} {{ $domain | quote }}
-{{- end }} ],
+      "serverNames": [ "{{ .local.xray.reality.domain }}" ],
       "privateKey": "{{ .local.xray.reality.privateKey }}",
       "shortIds": [ "" ]
     }
