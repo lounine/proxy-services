@@ -29,9 +29,16 @@
     not path {{ .local.xray.xhttp.path }}/*
   }
 
-  reverse_proxy @xhttp_path 172.22.0.11:2443
+  reverse_proxy @xhttp_path {
+    to 172.22.0.11:2443
+    
+    transport http {
+      versions 2 
+    }
+  } 
 
-  respond @no_specific_match "Access denied" 403 {
+  respond @no_specific_match 403 {
+    body "Access denied"
     close
   }
 }
