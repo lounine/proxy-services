@@ -34,11 +34,8 @@
   }
 
   reverse_proxy @xhttp_path {
-    to 172.22.0.11:2443
-
-    transport http {
-      versions 2 
-    }
+    to http://172.22.0.11:2443
+    flush_interval -1
   } 
 
   respond @no_specific_match 403 {
