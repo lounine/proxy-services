@@ -33,6 +33,6 @@
   }
 
   reverse_proxy {{ .local.xray.xhttp.path }}/* {
-    to https://pkgs.alpinelinux.org/
+    to https://pkgs.alpinelinux.org
   }
 }
