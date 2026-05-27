@@ -28,11 +28,11 @@
   }
 
   reverse_proxy {
-    to http://172.22.0.11:2443
-    flush_interval -1
+    to https://pkgs.alpinelinux.org
   }
 
   reverse_proxy {{ .local.xray.xhttp.path }}/* {
-    to https://pkgs.alpinelinux.org
+    to http://172.22.0.11:2443
+    flush_interval -1
   }
 }
