@@ -139,6 +139,8 @@ mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
 
 ##########################  SETTING UP SERVICES  ###########################
 
+echo "${nl}${bold}Setting up services${reset}"
+
 DEFAULT_OWNER=0
 DEFAULT_GROUP=0
 DEFAULT_FILE_PERMISSIONS=0440   # Readable by owner and group
@@ -222,8 +224,6 @@ EOF
 {{ if has .local "port" }}EXTERNAL_PORT={{ .local.port }}{{ end }}
 EOF
 
-echo "${nl}${bold}Setting up services${reset}"
-
 [ -d ./config ] && rm -rf ./config
 install_dir ./config
 
@@ -245,12 +245,11 @@ install_file ./config/caddy/Caddyfile
 
 ########### Preparing Xray configuration ############
 
-install_dir ./config/xray
-install_dir ./config/xray/config 65532 65532   # xray image user and group
+install_dir ./config/xray 65532 65532   # xray image user and group
 
-gomplate --input-dir ./template/xray/config --output-dir ./config/xray/config
+gomplate --input-dir ./template/xray/config --output-dir ./config/xray
 if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
-  gomplate --input-dir ./template/xray/config-nexthop --output-dir ./config/xray/config
+  gomplate --input-dir ./template/xray/config-nexthop --output-dir ./config/xray
 fi
 
 

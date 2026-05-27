@@ -34,7 +34,7 @@ services:
       - 127.0.0.1:1081:1081
       - 127.0.0.1:1082:1082
     volumes:
-      - /usr/local/share/proxy_services/config/xray/config/:/usr/local/etc/xray/:ro
+      - /usr/local/share/proxy_services/config/xray/:/usr/local/etc/xray/:ro
       - /usr/local/share/proxy_services/certs/:/usr/local/share/certs/:ro
     networks:
       lan:
