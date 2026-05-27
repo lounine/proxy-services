@@ -27,19 +27,12 @@
     }
   }
 
-  @xhttp_path path {{ .local.xray.xhttp.path }}/*
-
-  @no_specific_match {
-    not path {{ .local.xray.xhttp.path }}/*
-  }
-
-  reverse_proxy @xhttp_path {
+  reverse_proxy {
     to http://172.22.0.11:2443
     flush_interval -1
-  } 
+  }
 
-  respond @no_specific_match 403 {
-    body "Access denied"
-    close
+  reverse_proxy {{ .local.xray.xhttp.path }}/* {
+    to https://pkgs.alpinelinux.org/
   }
 }

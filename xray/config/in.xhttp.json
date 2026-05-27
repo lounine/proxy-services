@@ -5,6 +5,9 @@
   "protocol": "vless",
   "settings": {
     "decryption": "none",
+    "fallbacks": [{
+      "dest": "pkgs.alpinelinux.org:443"
+    }],
     "clients": {{ .users.xray |
       jq `[.clients[] | {email:.name, id:.secret}]` | toJSON }}
   },
