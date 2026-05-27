@@ -33,6 +33,7 @@
 
   reverse_proxy {{ .local.xray.xhttp.path }}/* {
     to http://172.22.0.11:2443
+    transport grpc
     flush_interval -1
   }
 }
