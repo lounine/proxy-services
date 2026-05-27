@@ -1,5 +1,5 @@
 {"inbounds":[{
-  "tag": "reality",
+  "tag": "in.vision.reality",
   "listen": "0.0.0.0",
   "port": 1443,
   "protocol": "vless",

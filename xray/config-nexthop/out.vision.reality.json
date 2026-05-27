@@ -1,5 +1,5 @@
 {"outbounds":[{
-  "tag": "reality",
+  "tag": "out.vision.reality",
   "protocol": "vless",
   "settings": {
     "vnext": [{

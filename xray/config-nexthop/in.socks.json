@@ -1,20 +1,20 @@
 {"inbounds":[
   {
-    "tag": "socks-stream-up",
+    "tag": "in.socks.out.xhttp.stream-up",
     "listen": "0.0.0.0",
     "port": 1080,
     "protocol": "socks"
   },
   {
-    "tag": "socks-packet-up",
+    "tag": "in.socks.out.xhttp.packet-up",
     "listen": "0.0.0.0",
     "port": 1081,
     "protocol": "socks"
   },
   {
-    "tag": "socks-reality",
+    "tag": "in.socks.out.vision.reality",
     "listen": "0.0.0.0",
     "port": 1082,
     "protocol": "socks"
   }
-]}
+]}§

@@ -1,5 +1,5 @@
 {"outbounds":[{
-  "tag": "xhttp.stream-up",
+  "tag": "out.xhttp.stream-up",
   "protocol": "vless",
   "settings": {
     "vnext": [{

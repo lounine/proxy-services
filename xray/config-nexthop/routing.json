@@ -10,16 +10,16 @@
       "outboundTag": "internet"
     },
     {
-      "inboundTag": "socks-stream-up",
-      "outboundTag": "xhttp.stream-up"
+      "inboundTag": "in.socks.out.xhttp.stream-up",
+      "outboundTag": "out.xhttp.stream-up"
     },
     {
-      "inboundTag": "socks-packet-up",
-      "outboundTag": "xhttp.packet-up"
+      "inboundTag": "in.socks.out.xhttp.packet-up",
+      "outboundTag": "out.xhttp.packet-up"
     },
     {
-      "inboundTag": "socks-reality",
-      "outboundTag": "reality"
+      "inboundTag": "in.socks.out.vision.reality",
+      "outboundTag": "out.vision.reality"
     }
   ]
 }}
