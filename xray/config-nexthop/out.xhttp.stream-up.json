@@ -3,8 +3,8 @@
   "protocol": "vless",
   "settings": {
     "vnext": [{
-      "address": "{{ .local.address }}",
-      "port": {{ .local.port }},
+      "address": "{{ .nexthop.xray.xhttp.domain }}",
+      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
       "users": [{{ .params.nexthop.xray.user |
         jq `{id:., encryption:"none"}` | toJSON }}]
     }]
@@ -12,14 +12,12 @@
   "streamSettings": {
     "network": "xhttp",
     "xhttpSettings": {
-      "path": "/api/v1/id/",
+      "path": "{{ .nexthop.xray.xhttp.path }}",
       "mode": "stream-up"
     },
-    "security": "reality",
-    "realitySettings": {
-      "fingerprint": "chrome", 
-      "serverName": "{{ .nexthop.xray.xhttp.SNI }}",
-      "publicKey": "{{ .nexthop.xray.reality.publicKey }}"
+    "security": "tls",
+    "tlsSettings": {
+      "fingerprint": "chrome"
     }
   }
 }]}

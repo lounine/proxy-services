@@ -10,8 +10,16 @@
       "outboundTag": "internet"
     },
     {
-      "ip": [ "0.0.0.0/0", "::/0"],
+      "inboundTag": "socks-stream-up",
       "outboundTag": "xhttp.stream-up"
+    },
+    {
+      "inboundTag": "socks-packet-up",
+      "outboundTag": "xhttp.stream-up"
+    },
+    {
+      "inboundTag": "socks-reality",
+      "outboundTag": "reality"
     }
   ]
 }}

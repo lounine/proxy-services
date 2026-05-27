@@ -1,9 +1,9 @@
 {"outbounds":[{
-  "tag": "vision",
+  "tag": "reality",
   "protocol": "vless",
   "settings": {
     "vnext": [{
-      "address": "{{ .local.address }}",
+      "address": "{{ .nexthop.xray.reality.domain }}",
       "port": {{ .local.port }},
       "users": [{{ .params.nexthop.xray.user | 
         jq `{id:., encryption:"none", flow:"xtls-rprx-vision"}` | toJSON }}]
