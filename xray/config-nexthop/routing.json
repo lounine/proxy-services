@@ -15,7 +15,7 @@
     },
     {
       "inboundTag": "socks-packet-up",
-      "outboundTag": "xhttp.stream-up"
+      "outboundTag": "xhttp.packet-up"
     },
     {
       "inboundTag": "socks-reality",
