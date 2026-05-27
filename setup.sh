@@ -71,7 +71,7 @@ if [ ! -f .installed-system-packages ]; then
   apt-get install -y --no-install-recommends \
     curl unzip ca-certificates gnupg apache2-utils tree
 
-  echo "Installing gomplate:"
+  echo "Installing gomplate... "
   curl -o /usr/local/bin/gomplate \
        -fsSL https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
   chmod 0755 /usr/local/bin/gomplate
@@ -139,24 +139,18 @@ mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
 
 ##########################  SETTING UP SERVICES  ###########################
 
-DEFAULT_OWNER=1000              # Owned and accessed by eventual container mock user and group
-DEFAULT_GROUP=1000              
+DEFAULT_OWNER=0
+DEFAULT_GROUP=0
 DEFAULT_FILE_PERMISSIONS=0440   # Readable by owner and group
 DEFAULT_DIR_PERMISSIONS=0550    # Accessible by owner and group
 
-set_permissions() {
+install_file() {
   local path="$1"
   local owner="${2:-$DEFAULT_OWNER}"
   local group="${3:-$DEFAULT_GROUP}"
   local permissions="${4:-$DEFAULT_FILE_PERMISSIONS}"
 
-  if [ -d "$path" ]; then
-    find "$path" -type f -exec chown "$owner:$group" {} \;
-    find "$path" -type f -exec chmod "$permissions" {} \;
-  else
-    chown "$owner:$group" "$path"
-    chmod "$permissions" "$path"
-  fi
+  install -m $permissions -o $owner -g $group /dev/null "$path" 
 }
 
 install_dir() {
@@ -187,6 +181,11 @@ if [ ! -f .gomplate.yaml ]; then
     read NEXTHOP_XRAY_USER
   fi
 
+  install_file .gomplate.yaml
+  install_file .params.yaml
+  install_file .log.yaml
+  install_file .env
+
   > .gomplate.yaml cat << EOF
 missingKey: zero
 context:
@@ -201,7 +200,6 @@ context:
   log:
     url: .log.yaml
 EOF
-  set_permissions .gomplate.yaml 0 0
 fi
 
 TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
@@ -215,42 +213,38 @@ nexthop:
 telegram:
   domain: ${TELEGRAM_SNI:-}
 EOF
-set_permissions .params.yaml 0 0
 
 > .log.yaml cat << EOF
 level: $LOG_LEVEL
 EOF
-set_permissions .log.yaml 0 0
 
 > .env gomplate << EOF
 {{ if has .local "port" }}EXTERNAL_PORT={{ .local.port }}{{ end }}
 EOF
-set_permissions .env 0 0
 
 echo "${nl}${bold}Setting up services${reset}"
 
-rm -rf ./config; install -m 0755 -d ./config
+[ -d ./config ] && rm -rf ./config
+install_dir ./config
 
 ########## Preparing HAProxy configuration ##########
 
-[ -d ./config/haproxy ] && rm -rf ./config/haproxy
 install_dir ./config/haproxy
+install_file ./config/haproxy/haproxy.cfg 99 99    # haproxy user and group
 
 > ./config/haproxy/haproxy.cfg gomplate < ./template/haproxy/haproxy.cfg
-set_permissions ./config/haproxy/haproxy.cfg 99 99    # haproxy user and group
 
 
 ########### Preparing Caddy configuration ###########
 
-[ -d ./config/caddy ] && rm -rf ./config/caddy
 install_dir ./config/caddy
+install_file ./config/caddy/Caddyfile
 
 > ./config/caddy/Caddyfile gomplate < ./template/caddy/Caddyfile
 
 
 ########### Preparing Xray configuration ############
 
-[ -d ./config/xray ] && rm -rf ./config/xray
 install_dir ./config/xray
 install_dir ./config/xray/config 65532 65532   # xray image user and group
 
@@ -258,16 +252,14 @@ gomplate --input-dir ./template/xray/config --output-dir ./config/xray/config
 if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
   gomplate --input-dir ./template/xray/config-nexthop --output-dir ./config/xray/config
 fi
-set_permissions ./config/xray/config 65532 65532   # xray image user and group
 
 
 ############ Preparing MTG configuration ############
 
-[ -d ./config/mtg ] && rm -rf ./config/mtg
 install_dir ./config/mtg
+install_file ./config/mtg/config.toml
 
 > ./config/mtg/config.toml gomplate < ./template/mtg/config.toml
-set_permissions ./config/mtg/config.toml
 
 
 ################# All configs ready #################
