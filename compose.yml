@@ -53,7 +53,8 @@ services:
 networks:
   lan:
     driver: bridge
+    enable_ipv6: true
     ipam:
       config:
         - subnet: 172.22.0.0/16
-          gateway: 172.22.0.1
+        - subnet: "fd00:0:0:1::/64"
