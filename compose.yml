@@ -14,6 +14,7 @@ services:
     networks:
       lan:
         ipv4_address: 172.22.0.2
+        ipv6_address: fd00:0:0:1::2
 
   caddy:
     image: caddy:2
@@ -24,6 +25,7 @@ services:
     networks:
       lan:
         ipv4_address: 172.22.0.10
+        ipv6_address: fd00:0:0:1::10
 
   xray:
     container_name: xray
@@ -39,6 +41,7 @@ services:
     networks:
       lan:
         ipv4_address: 172.22.0.11
+        ipv6_address: fd00:0:0:1::11
       
   mtg:
     image: nineseconds/mtg:2
@@ -49,6 +52,7 @@ services:
     networks:
       lan:
         ipv4_address: 172.22.0.12
+        ipv6_address: fd00:0:0:1::12
 
 networks:
   lan:
