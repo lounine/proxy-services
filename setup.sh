@@ -202,12 +202,11 @@ context:
   log:
     url: .log.yaml
 EOF
-fi
 
-TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
-TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | basenc -d --base64url 2>/dev/null | dd bs=1 skip=17 2>/dev/null)
+  TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
+  TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | basenc -d --base64url 2>/dev/null | dd bs=1 skip=17 2>/dev/null)
 
-> .params.yaml cat << EOF
+  > .params.yaml cat << EOF
 nexthop:
   socks_proxy: ${NEXTHOP_SOCKS_PROXY:-''}
   xray:
@@ -216,13 +215,15 @@ telegram:
   domain: ${TELEGRAM_SNI:-}
 EOF
 
-> .log.yaml cat << EOF
+  > .log.yaml cat << EOF
 level: $LOG_LEVEL
 EOF
 
-> .env gomplate << EOF
+  > .env gomplate << EOF
 {{ if has .local "port" }}EXTERNAL_PORT={{ .local.port }}{{ end }}
 EOF
+
+fi
 
 [ -d ./config ] && rm -rf ./config
 install_dir ./config
