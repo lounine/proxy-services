@@ -17,8 +17,9 @@
   redir https://{host}{uri} 308
 }
 
-{{ .local.xray.reality.domain }}, {{ .params.telegram.domain }} ,
-{{ .local.xray.xhttp.domain }}, {{ .local.xray.xhttp.cdn_domain }} {
+{{ join .local.xray.reality.domains ", "}},
+{{ join .local.xray.xhttp.domains ", "}},
+{{ .params.telegram.domain }} {
   header -Server      # don't reveal we are using caddy
 
   tls {
