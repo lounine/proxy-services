@@ -264,7 +264,7 @@ install_file ./config/mtg/config.toml
 ################# All configs ready #################
 
 echo "${nl}${bold}All service configs ready:${reset}"
-tree -a --dirsfirst ./config
+tree -a --dirsfirst $PWD/config
 
 
 ###########################  STARTING SERVICES  ############################

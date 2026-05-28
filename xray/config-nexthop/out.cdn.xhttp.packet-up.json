@@ -1,4 +1,4 @@
-.{"outbounds":[{
+{"outbounds":[{
   "tag": "out.cdn.xhttp.packet-up",
   "protocol": "vless",
   "settings": {
