@@ -3,7 +3,7 @@
   "protocol": "vless",
   "settings": {
     "vnext": [{
-      "address": "{{ index .nexthop.xray.reality.domains 1 }}",
+      "address": "{{ index .nexthop.xray.xhttp.domains 1 }}",
       "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
       "users": [{{ .params.nexthop.xray.user |
         jq `{id:., encryption:"none"}` | toJSON }}]
