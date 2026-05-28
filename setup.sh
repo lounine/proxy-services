@@ -141,27 +141,26 @@ mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
 
 echo "${nl}${bold}Setting up services${reset}"
 
-DEFAULT_OWNER=0
-DEFAULT_GROUP=0
+DEFAULT_OWNERSHIP=0:0
 DEFAULT_FILE_PERMISSIONS=0440   # Readable by owner and group
 DEFAULT_DIR_PERMISSIONS=0550    # Accessible by owner and group
 
 install_file() {
   local path="$1"
-  local owner="${2:-$DEFAULT_OWNER}"
-  local group="${3:-$DEFAULT_GROUP}"
-  local permissions="${4:-$DEFAULT_FILE_PERMISSIONS}"
+  local ownership="${2:-$DEFAULT_OWNERSHIP}"
+  local permissions="${3:-$DEFAULT_FILE_PERMISSIONS}"
 
-  install -m $permissions -o $owner -g $group /dev/null "$path" 
+  install -m $permissions /dev/null "$path"
+  chown $ownership "$path"
 }
 
 install_dir() {
   local path="$1"
-  local owner="${2:-$DEFAULT_OWNER}"
-  local group="${3:-$DEFAULT_GROUP}"
-  local permissions="${4:-$DEFAULT_DIR_PERMISSIONS}"
+  local ownership="${2:-$DEFAULT_OWNERSHIP}"
+  local permissions="${3:-$DEFAULT_DIR_PERMISSIONS}"
 
-  install -m $permissions -o $owner -g $group -d "$path"
+  install -m $permissions -d "$path"
+  chown $ownership "$path"
 }
 
 ################# Getting settings ##################
@@ -231,7 +230,7 @@ install_dir ./config
 ########## Preparing HAProxy configuration ##########
 
 install_dir ./config/haproxy
-install_file ./config/haproxy/haproxy.cfg 99 99    # haproxy user and group
+install_file ./config/haproxy/haproxy.cfg 99:99    # haproxy user and group
 
 > ./config/haproxy/haproxy.cfg gomplate < ./template/haproxy/haproxy.cfg
 
@@ -246,7 +245,7 @@ install_file ./config/caddy/Caddyfile
 
 ########### Preparing Xray configuration ############
 
-install_dir ./config/xray 65532 65532   # xray image user and group
+install_dir ./config/xray 65532:65532   # xray image user and group
 
 gomplate --input-dir ./template/xray/config --output-dir ./config/xray
 if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
