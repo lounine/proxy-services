@@ -1,9 +1,9 @@
-{"outbounds":[{
-  "tag": "out.xhttp.stream-up",
+.{"outbounds":[{
+  "tag": "out.cdn.xhttp.packet-up",
   "protocol": "vless",
   "settings": {
     "vnext": [{
-      "address": "{{ index .nexthop.xray.reality.domains 0 }}",
+      "address": "{{ index .nexthop.xray.reality.domains 1 }}",
       "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
       "users": [{{ .params.nexthop.xray.user |
         jq `{id:., encryption:"none"}` | toJSON }}]
@@ -13,7 +13,7 @@
     "network": "xhttp",
     "xhttpSettings": {
       "path": "{{ .nexthop.xray.xhttp.path }}",
-      "mode": "stream-up"
+      "mode": "packet-up"
     },
     "security": "tls",
     "tlsSettings": {

@@ -12,9 +12,15 @@
     "protocol": "socks"
   },
   {
-    "tag": "in.socks.out.vision.reality",
+    "tag": "in.socks.out.cdn.xhttp.packet-up",
     "listen": "0.0.0.0",
     "port": 1082,
     "protocol": "socks"
+  },
+  {
+    "tag": "in.socks.out.vision.reality",
+    "listen": "0.0.0.0",
+    "port": 1090,
+    "protocol": "socks"
   }
-]}§
+]}
