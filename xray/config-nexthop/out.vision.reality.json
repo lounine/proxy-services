@@ -14,7 +14,7 @@
     "security": "reality",
     "realitySettings": {
       "fingerprint": "chrome", 
-      "serverName": "{{ .nexthop.xray.reality.domain }}",
+      "serverName": "{{ index .nexthop.xray.reality.domains 0 }}",
       "publicKey": "{{ .nexthop.xray.reality.publicKey }}"
     }
   }
