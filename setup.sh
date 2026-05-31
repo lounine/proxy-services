@@ -131,8 +131,7 @@ curl -o "$TEMP_DIR/sources.zip" \
 unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/compose.yml" .
 rm -rf ./template; install -m 0755 -d ./template
-mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/haproxy" ./template/haproxy
-mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/caddy" ./template/caddy
+mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/nginx" ./template/nginx
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/mtg" ./template/mtg
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
 
@@ -227,12 +226,12 @@ fi
 [ -d ./config ] && rm -rf ./config
 install_dir ./config
 
-########## Preparing HAProxy configuration ##########
+########## Preparing nginx configuration ##########
 
-install_dir ./config/haproxy
-install_file ./config/haproxy/haproxy.cfg 99:99    # haproxy user and group
+install_dir ./config/nginx
+install_file ./config/nginx/nginx.conf
 
-> ./config/haproxy/haproxy.cfg gomplate < ./template/haproxy/haproxy.cfg
+cat ./template/haproxy/haproxy.cfg | gomplate > ./config/nginx/nginx.conf
 
 
 ########### Preparing Caddy configuration ###########
@@ -240,7 +239,7 @@ install_file ./config/haproxy/haproxy.cfg 99:99    # haproxy user and group
 install_dir ./config/caddy
 install_file ./config/caddy/Caddyfile
 
-> ./config/caddy/Caddyfile gomplate < ./template/caddy/Caddyfile
+cat ./template/caddy/Caddyfile | gomplate > ./config/caddy/Caddyfile
 
 
 ########### Preparing Xray configuration ############
@@ -258,7 +257,7 @@ fi
 install_dir ./config/mtg
 install_file ./config/mtg/config.toml
 
-> ./config/mtg/config.toml gomplate < ./template/mtg/config.toml
+cat ./template/mtg/config.toml | gomplate > ./config/mtg/config.toml
 
 
 ################# All configs ready #################
