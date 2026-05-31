@@ -121,7 +121,7 @@ ip = "172.22.0.2"
 
 # FakeTLS uses domain fronting protection. So it needs to know a port to
 # access. Default value is 443
-# port = 443
+port = 8443
 
 # This makes a communication between both fronting website and mtg to use
 # proxy protocol.
