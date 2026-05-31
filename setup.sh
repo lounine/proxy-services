@@ -295,6 +295,6 @@ for domain in $domains; do
   docker exec acme.sh --issue --standalone -d $domain \
                       $( [ "$LOG_LEVEL" = "debug" ] && echo '--debug' ) \
                       --fullchain-file /certs/$domain.crt --key-file /certs/$domain.key \
-                      --reloadcmd 'chown 101:101 /certs/*'  #nginx user and group \
+                      --reloadcmd 'chown 101:101 /certs/*' \  #nginx user and group
                       || : # already issued certificates provoke error here
 done
