@@ -226,6 +226,7 @@ fi
 [ -d ./config ] && rm -rf ./config
 install_dir ./config
 
+
 ########## Preparing nginx configuration ##########
 
 install_dir ./config/nginx
