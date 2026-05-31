@@ -231,15 +231,7 @@ install_dir ./config
 install_dir ./config/nginx
 install_file ./config/nginx/nginx.conf
 
-cat ./template/haproxy/haproxy.cfg | gomplate > ./config/nginx/nginx.conf
-
-
-########### Preparing Caddy configuration ###########
-
-install_dir ./config/caddy
-install_file ./config/caddy/Caddyfile
-
-cat ./template/caddy/Caddyfile | gomplate > ./config/caddy/Caddyfile
+cat ./template/nginx/nginx.conf | gomplate > ./config/nginx/nginx.conf
 
 
 ########### Preparing Xray configuration ############
