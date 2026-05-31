@@ -273,3 +273,25 @@ tree -a --dirsfirst $PWD/config
 echo "${nl}${bold}Starting up services:${reset}"
 docker compose up --detach
 docker compose restart
+
+
+##########################  ISSUING CERTIFICATES  ##########################
+
+echo "${nl}${bold}Issuing certificates:${reset}"
+
+echo "${green}Registering account:${reset}"
+email="$( echo 'admin@{{ index .local.xray.xhttp.domains 0 }}' |  gomplate )"
+docker exec acme.sh --register-account -m "$email"
+
+domains=$( gomplate << 'EOF'
+  {{ join .local.xray.reality.domains " " }}
+  {{ join .local.xray.xhttp.domains " " }}
+  {{ .params.telegram.domain }}
+EOF
+)
+
+for domain in $domains; do
+  echo "${green}Issuing certificate for $domain:${reset}"
+  docker exec acme.sh --issue --standalone \
+         -d $domain --fullchain-file /certs/$domain.crt --key-file /certs/$domain.key
+done

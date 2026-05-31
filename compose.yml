@@ -22,10 +22,8 @@ services:
     container_name: acme.sh
     restart: unless-stopped
     command: daemon
-    stdin_open: true
-    tty: true
     volumes:
-      - /usr/local/share/proxy_services/certs:/acme.sh:rw
+      - /usr/local/share/proxy_services/certs:/certs:rw
     networks:
       lan:
         ipv4_address: 172.22.0.3
