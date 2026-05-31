@@ -162,6 +162,15 @@ install_dir() {
   chown $ownership "$path"
 }
 
+base64url_to_base64() {
+  local base64=$(tr -- '-_' '+/')
+  local reminder=$(( ${#base64} % 4 ))
+  [ $reminder = 2 ] && base64="${base64}=="
+  [ $reminder = 3 ] && base64="${base64}="
+  echo -n "$base64"
+}
+
+
 ################# Getting settings ##################
 
 if [ ! -f .gomplate.yaml ]; then
@@ -202,7 +211,7 @@ context:
 EOF
 
   TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
-  TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | basenc -d --base64url 2>/dev/null | dd bs=1 skip=17 2>/dev/null)
+  TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | base64url_to_base64 | base64 -d | dd bs=1 skip=17 2>/dev/null)
 
   > .params.yaml cat << EOF
 nexthop:
