@@ -2,12 +2,11 @@
   "tag": "out.xhttp.packet-up",
   "protocol": "vless",
   "settings": {
-    "vnext": [{
-      "address": "{{ index .nexthop.xray.xhttp.domains 0 }}",
-      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
-      "users": [{{ .params.nexthop.xray.user |
-        jq `{id:., encryption:"none"}` | toJSON }}]
-    }]
+    "address": "{{ index .nexthop.xray.xhttp.domains 0 }}",
+    "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
+    "id": "{{ .params.nexthop.xray.user }}",
+    "flow": "xtls-rprx-vision",
+    "encryption": "none"
   },
   "streamSettings": {
     "network": "xhttp",
