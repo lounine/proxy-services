@@ -197,7 +197,7 @@ dns = "https://1.1.1.1"
 # see, you can specify some parameters in GET query. These parameters
 # configure circuit breaker.
 proxies = [
-    {{ .params.nexthop.socks_proxy }}
+    {{ .params.nexthop.socks_proxy | quote }}
 ]
 
 # network timeouts define different settings for timeouts. tcp timeout

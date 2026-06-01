@@ -185,7 +185,7 @@ if [ ! -f .gomplate.yaml ]; then
   read NEXTHOP_CONFIG_URL
   
   if [ -n "$NEXTHOP_CONFIG_URL" ]; then
-    NEXTHOP_SOCKS_PROXY='"socks5://172.22.0.11:1080"'
+    NEXTHOP_SOCKS_PROXY='socks5://172.22.0.11:1080'
     echo "${blue}Provide user ID (secret) from the netxhop xray:${reset}"
     read NEXTHOP_XRAY_USER
   fi
