@@ -284,7 +284,7 @@ docker compose restart
 echo "${nl}${bold}Issuing certificates:${reset}"
 
 email="$( echo 'admin@{{ index .local.xray.xhttp.domains 0 }}' |  gomplate )"
-echo "${green}Registering account for '$email':${reset}"
+echo "${green}Registering account for <$email>:${reset}"
 docker exec acme.sh --register-account --server letsencrypt -m "$email"
 
 domains=$( gomplate << 'EOF'

@@ -15,7 +15,7 @@
     },
     {
       "inboundTag": "in.xhttp",
-      "outboundTag": "out.xhttp.packet-up"
+      "outboundTag": "out.xhttp.stream-up"
     },
     {
       "inboundTag": "in.socks.out.xhttp.stream-up",
