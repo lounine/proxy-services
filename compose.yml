@@ -49,7 +49,7 @@ services:
         ipv6_address: fd00:0:0:1::11
 
   mtg:
-    image: nineseconds/mtg:2
+    image: nineseconds/mtg
     container_name: mtg
     restart: unless-stopped
     volumes:
