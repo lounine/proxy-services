@@ -16,6 +16,9 @@
     "security": "tls",
     "tlsSettings": {
       "fingerprint": "chrome"
+    },
+    "sockopt": {
+      "domainStrategy": "UseIPv6v4"
     }
   }
 }]}
