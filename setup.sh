@@ -185,7 +185,6 @@ if [ ! -f .gomplate.yaml ]; then
   read NEXTHOP_CONFIG_URL
   
   if [ -n "$NEXTHOP_CONFIG_URL" ]; then
-    NEXTHOP_SOCKS_PROXY='socks5://172.22.0.11:1080'
     echo "${blue}Provide user ID (secret) from the netxhop xray:${reset}"
     read NEXTHOP_XRAY_USER
   fi
@@ -210,27 +209,32 @@ context:
     url: .log.yaml
 EOF
 
-  TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
-  TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | base64url_to_base64 | base64 -d | dd bs=1 skip=17 2>/dev/null)
+fi
 
-  > .params.yaml cat << EOF
+TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
+TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | base64url_to_base64 | base64 -d | dd bs=1 skip=17 2>/dev/null)
+
+if [ -n "$(gomplate --in '{{ .nexthop }}')" ]; then
+  NEXTHOP_SOCKS_PROXY='"socks5://172.22.0.11:1080"'
+  ${NEXTHOP_XRAY_USER:=$(gomplate --in '{{ .params.nexthop.xray.user }}')}
+fi
+
+> .params.yaml cat << EOF
 nexthop:
-  socks_proxy: ${NEXTHOP_SOCKS_PROXY:-''}
+  socks_proxy: '${NEXTHOP_SOCKS_PROXY:-}'
   xray:
     user: ${NEXTHOP_XRAY_USER:-}
 telegram:
   domain: ${TELEGRAM_SNI:-}
 EOF
 
-  > .log.yaml cat << EOF
+> .log.yaml cat << EOF
 level: $LOG_LEVEL
 EOF
 
-  > .env gomplate << EOF
+> .env gomplate << EOF
 {{ if has .local "port" }}EXTERNAL_PORT={{ .local.port }}{{ end }}
 EOF
-
-fi
 
 [ -d ./config ] && rm -rf ./config
 install_dir ./config
