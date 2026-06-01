@@ -24,6 +24,7 @@ services:
     command: daemon
     volumes:
       - /usr/local/share/proxy_services/certs:/certs:rw
+      - /usr/local/share/proxy_services/acme.sh:/acme.sh:rw
     networks:
       lan:
         ipv4_address: 172.22.0.3
