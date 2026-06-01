@@ -216,7 +216,7 @@ TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | base64url_to_base64 | base64 -d | dd bs
 
 if [ -n "$(gomplate --in '{{ .nexthop }}')" ]; then
   NEXTHOP_SOCKS_PROXY='"socks5://172.22.0.11:1080"'
-  ${NEXTHOP_XRAY_USER:=$(gomplate --in '{{ .params.nexthop.xray.user }}')}
+  : ${NEXTHOP_XRAY_USER:=$(gomplate --in '{{ .params.nexthop.xray.user }}')}
 fi
 
 > .params.yaml cat << EOF
