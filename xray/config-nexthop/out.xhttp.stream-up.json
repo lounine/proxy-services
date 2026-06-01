@@ -5,7 +5,6 @@
     "address": "{{ index .nexthop.xray.xhttp.domains 0 }}",
     "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
     "id": "{{ .params.nexthop.xray.user }}",
-    "flow": "xtls-rprx-vision",
     "encryption": "none"
   },
   "streamSettings": {
