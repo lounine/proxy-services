@@ -34,13 +34,6 @@ services:
     container_name: xray
     image: ghcr.io/xtls/xray-core
     restart: unless-stopped
-    ports:
-      - 127.0.0.1:1080:1080
-      - 127.0.0.1:1081:1081
-      - 127.0.0.1:1082:1082
-      - 127.0.0.1:1083:1083
-      - 127.0.0.1:1084:1084
-      - 127.0.0.1:1085:1085
     volumes:
       - /usr/local/share/proxy_services/config/xray/:/usr/local/etc/xray/:ro
       - /usr/local/share/proxy_services/certs/:/usr/local/share/certs/:ro
