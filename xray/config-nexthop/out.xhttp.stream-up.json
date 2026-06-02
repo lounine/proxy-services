@@ -15,7 +15,7 @@
     },
     "security": "tls",
     "tlsSettings": {
-      "fingerprint": "firefox"
+      "fingerprint": "chrome"
     },
     "sockopt": {
       "domainStrategy": "UseIPv6v4"
