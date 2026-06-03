@@ -43,6 +43,9 @@ fi
 
 ##########################  SETTING UP SERVICES  ###########################
 
+install -m 0750 -d ./certs
+install -m 0750 -d ./acme.sh
+
 ./setup/config.sh "$@"
 
 sudo docker compose up --detach

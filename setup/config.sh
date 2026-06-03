@@ -132,7 +132,8 @@ install -m 750 -d ./config
 ########## Preparing nginx configuration ##########
 
 install -m 750 -d ./config/nginx
-install -m 640 <(gomplate -f ./config/nginx/nginx.conf) ./config/nginx/nginx.conf
+cat ./template/nginx/nginx.conf | gomplate > ./config/nginx/nginx.conf
+chmod 640 ./config/nginx/nginx.conf
 
 
 ########### Preparing Xray configuration ############
@@ -153,8 +154,8 @@ chmod 640 ./config/xray/*
 ############ Preparing MTG configuration ############
 
 install -m 750 -d ./config/mtg
-install -m 640 <(gomplate -f ./template/mtg/config.toml) ./config/mtg/config.toml
-
+cat ./template/mtg/config.toml | gomplate > ./config/mtg/config.toml
+chmod 640 ./config/mtg/config.toml
 
 ################# All configs ready #################
 
