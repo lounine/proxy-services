@@ -19,9 +19,9 @@ cleanup() { rm -rf "$TEMP_DIR"; };    trap cleanup EXIT
 curl -o "$TEMP_DIR/sources.zip" \
      -fsSL https://github.com/lounine/proxy-services/archive/refs/heads/$BRANCH_NAME.zip
 unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
-mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/compose.yml" .
-mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/setup" .
-# mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/test" .
+mv -f "$TEMP_DIR/proxy-services-$BRANCH_NAME/compose.yml" .
+mv -f "$TEMP_DIR/proxy-services-$BRANCH_NAME/setup" .
+# mv -f "$TEMP_DIR/proxy-services-$BRANCH_NAME/test" .
 rm -rf ./template; install -m 0755 -d ./template
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/nginx" ./template/nginx
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/mtg" ./template/mtg
