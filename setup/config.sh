@@ -145,8 +145,8 @@ if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
 fi
 
 # Ensure xray (group id 65532) can read config files and we still can write them:
-chown :65532 ./config/xray
-chown :65532 ./config/xray/*
+sudo chown :65532 ./config/xray
+sudo chown :65532 ./config/xray/*
 chmod 640 ./config/xray/*
 
 

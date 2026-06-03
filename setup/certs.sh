@@ -8,6 +8,14 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"/..
 
 
+####################  CHECKING / PREPARING ENVIRONMENT  ####################
+
+if [ $EUID -ne 0 ]; then
+  echo "${bold}This script should be run with root privileges. Please use sudo.${reset}"
+  exit 1
+fi
+
+
 ##########################  ISSUING CERTIFICATES  ##########################
 
 echo "${nl}${bold}Issuing certificates:${reset}"
