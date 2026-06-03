@@ -59,6 +59,10 @@ services:
     build:
       context: ./test
     restart: unless-stopped
+    networks:
+      lan:
+        ipv4_address: 172.22.0.21
+        ipv6_address: fd00:0:0:1::21
 
 
 networks:
