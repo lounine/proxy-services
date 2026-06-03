@@ -78,10 +78,10 @@ if [ ! -f .gomplate.yaml ]; then
     read NEXTHOP_XRAY_USER
   fi
 
-  install -m 440 /dev/null .gomplate.yaml
-  install -m 440 /dev/null .params.yaml
-  install -m 440 /dev/null .log.yaml
-  install -m 440 /dev/null .env
+  install -m 640 /dev/null .gomplate.yaml
+  install -m 640 /dev/null .params.yaml
+  install -m 640 /dev/null .log.yaml
+  install -m 640 /dev/null .env
 
   > .gomplate.yaml cat << EOF
 missingKey: zero
@@ -126,18 +126,18 @@ EOF
 EOF
 
 [ -d ./config ] && rm -rf ./config
-install -m 550 -d ./config
+install -m 750 -d ./config
 
 
 ########## Preparing nginx configuration ##########
 
-install -m 550 -d ./config/nginx
-install -m 440 <(gomplate -f ./config/nginx/nginx.conf) ./config/nginx/nginx.conf
+install -m 750 -d ./config/nginx
+install -m 640 <(gomplate -f ./config/nginx/nginx.conf) ./config/nginx/nginx.conf
 
 
 ########### Preparing Xray configuration ############
 
-install -m 550 -d ./config/xray;  
+install -m 750 -d ./config/xray;  
 
 gomplate --input-dir ./template/xray/config --output-dir ./config/xray
 if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
@@ -147,13 +147,13 @@ fi
 # Ensure xray (group id 65532) can read config files and we still can write them:
 chown :65532 ./config/xray
 chown :65532 ./config/xray/*
-chmod 440 ./config/xray/*
+chmod 640 ./config/xray/*
 
 
 ############ Preparing MTG configuration ############
 
-install -m 550 -d ./config/mtg
-install -m 440 <(gomplate -f ./template/mtg/config.toml) ./config/mtg/config.toml
+install -m 750 -d ./config/mtg
+install -m 640 <(gomplate -f ./template/mtg/config.toml) ./config/mtg/config.toml
 
 
 ################# All configs ready #################
