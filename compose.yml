@@ -59,6 +59,10 @@ services:
     build:
       context: ./test
     restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
     networks:
       lan:
         ipv4_address: 172.22.0.21
