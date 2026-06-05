@@ -13,7 +13,7 @@ cd $HOME/.proxy_services
 ARCH=$(dpkg --print-architecture)
 
 if [ ! -f .installed-system-packages ]; then
-  echo "${nl}${bold}Installing system packages${reset}"
+  echo "Installing system packages..."
 
   sudo apt-get update
   sudo apt-get install -y --no-install-recommends \
