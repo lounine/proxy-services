@@ -8,16 +8,23 @@ install -m 0755 -d $HOME/.proxy_services
 cd $HOME/.proxy_services
 
 
-############################  SETTING UP SYSTEM  ###########################
+#######################  INSTALLING SYSTEM PACKAGES  #######################
+
+ARCH=$(dpkg --print-architecture)
 
 if [ ! -f .installed-system-packages ]; then
-  sudo ./setup/system.sh
-  touch .installed-system-packages
-fi
+  echo "${nl}${bold}Installing system packages${reset}"
 
-if [ ! -f .installed-docker ]; then
-  sudo ./setup/docker.sh
-  touch .installed-docker
+  sudo apt-get update
+  sudo apt-get install -y --no-install-recommends \
+    curl unzip ca-certificates gnupg apache2-utils tree
+
+  echo "Installing gomplate... "
+  sudo curl -o /usr/local/bin/gomplate \
+        -fsSL https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
+  sudo chmod 0755 /usr/local/bin/gomplate
+
+  touch .installed-system-packages
 fi
 
 
@@ -39,6 +46,14 @@ rm -rf ./template;  install -m 0755 -d ./template
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/nginx" ./template/nginx
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/mtg" ./template/mtg
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
+
+
+###########################  INSTALLING DOCKER  ############################
+
+if [ ! -f .installed-docker ]; then
+  sudo ./setup/docker.sh
+  touch .installed-docker
+fi
 
 
 ##########################  SETTING UP SERVICES  ###########################
