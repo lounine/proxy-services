@@ -1,5 +1,11 @@
 name: proxy-services
 
+x-hosts: &extra_hosts
+  - "ingress:172.22.0.2"
+  - "socks_proxy:172.22.0.11"
+  - "xray:172.22.0.11"
+  - "mtg:172.22.0.12"
+
 services:
 
   nginx:
@@ -12,6 +18,7 @@ services:
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs:/etc/nginx/certs:ro
+    extra_hosts: *extra_hosts
     networks:
       lan:
         ipv4_address: 172.22.0.2
@@ -37,6 +44,7 @@ services:
     volumes:
       - ./config/xray/:/usr/local/etc/xray/:ro
       - ./certs/:/usr/local/share/certs/:ro
+    extra_hosts: *extra_hosts
     networks:
       lan:
         ipv4_address: 172.22.0.11
@@ -48,6 +56,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/mtg/config.toml:/config/config.toml:ro
+    extra_hosts: *extra_hosts
     networks:
       lan:
         ipv4_address: 172.22.0.12
@@ -63,6 +72,7 @@ services:
       - NET_ADMIN
     devices:
       - /dev/net/tun
+    extra_hosts: *extra_hosts
     networks:
       lan:
         ipv4_address: 172.22.0.21

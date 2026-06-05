@@ -8,6 +8,19 @@ install -m 0755 -d $HOME/.proxy_services
 cd $HOME/.proxy_services
 
 
+############################  SETTING UP SYSTEM  ###########################
+
+if [ ! -f .installed-system-packages ]; then
+  sudo ./setup/system.sh
+  touch .installed-system-packages
+fi
+
+if [ ! -f .installed-docker ]; then
+  sudo ./setup/docker.sh
+  touch .installed-docker
+fi
+
+
 ##########################  DOWNLOADING CONFIGS  ###########################
 
 echo "Downloading latest configs..."
@@ -26,19 +39,6 @@ rm -rf ./template;  install -m 0755 -d ./template
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/nginx" ./template/nginx
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/mtg" ./template/mtg
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
-
-
-############################  SETTING UP SYSTEM  ###########################
-
-if [ ! -f .installed-system-packages ]; then
-  sudo ./setup/system.sh
-  touch .installed-system-packages
-fi
-
-if [ ! -f .installed-docker ]; then
-  sudo ./setup/docker.sh
-  touch .installed-docker
-fi
 
 
 ##########################  SETTING UP SERVICES  ###########################
