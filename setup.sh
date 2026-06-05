@@ -44,6 +44,7 @@ fi
 ##########################  SETTING UP SERVICES  ###########################
 
 install -m 0750 -d ./certs
+sudo chown :101 ./certs     # ensure us and nginx (group id 101) can list certs
 install -m 0750 -d ./acme.sh
 
 ./setup/config.sh "$@"

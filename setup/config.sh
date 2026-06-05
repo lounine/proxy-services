@@ -49,8 +49,6 @@ done
 
 ##########################  SETTING UP SERVICES  ###########################
 
-echo "${nl}${bold}Setting up services${reset}"
-
 base64url_to_base64() {
   local base64=$(tr -- '-_' '+/')
   local reminder=$(( ${#base64} % 4 ))
@@ -63,6 +61,8 @@ base64url_to_base64() {
 ################# Getting settings ##################
 
 if [ ! -f .gomplate.yaml ]; then
+  echo "${nl}${bold}Configuring services${reset}"
+
   echo "${blue}Provide config file url:${reset}"
   read LOCAL_CONFIG_URL
 
@@ -99,6 +99,8 @@ context:
 EOF
 
 fi
+
+echo "${nl}${bold}Setting up services...${reset}"
 
 TELEGRAM_SECRET=$(gomplate --in '{{ .local.telegram.secret }}')
 TELEGRAM_SNI=$(echo "$TELEGRAM_SECRET" | base64url_to_base64 | base64 -d | dd bs=1 skip=17 2>/dev/null)
