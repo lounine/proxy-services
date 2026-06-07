@@ -2,35 +2,31 @@
   "domainStrategy": "IPOnDemand",
   "rules": [
     {
-      "ip": [ "172.23.0.21" ],
-      "outboundTag": "test-container"
-    },
-    {
       "ip": [ "geoip:ru" ],
       "outboundTag": "internet"
     },
     {
-      "inboundTag": "in.vision.reality",
+      "inboundTag": [ "in.vision.reality" ],
       "outboundTag": "out.vision.reality"
     },
     {
-      "inboundTag": "in.xhttp",
+      "inboundTag": [ "in.xhttp" ],
       "outboundTag": "out.xhttp.stream-up"
     },
     {
-      "inboundTag": "in.socks.out.xhttp.stream-up",
+      "inboundTag": [ "in.socks.out.xhttp.stream-up" ],
       "outboundTag": "out.xhttp.stream-up"
     },
     {
-      "inboundTag": "in.socks.out.xhttp.packet-up",
+      "inboundTag": [ "in.socks.out.xhttp.packet-up" ],
       "outboundTag": "out.xhttp.packet-up"
     },
     {
-      "inboundTag": "in.socks.out.cdn.xhttp.packet-up",
+      "inboundTag": [ "in.socks.out.cdn.xhttp.packet-up" ],
       "outboundTag": "out.cdn.xhttp.packet-up"
     },
     {
-      "inboundTag": "in.socks.out.vision.reality",
+      "inboundTag": [ "in.socks.out.vision.reality" ],
       "outboundTag": "out.vision.reality"
     }
   ]
