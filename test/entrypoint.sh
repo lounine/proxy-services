@@ -3,15 +3,20 @@
 set -eu
 
 function setup_tun() {
-  id=$1
-  ip tuntap add mode tun dev tun${id}
-  ip addr add 10.0.10.${id}/15 dev tun${id}
-  ip link set dev tun${id} up
+  port=$1
+  ip1=$(( port / 10000 ))
+  ip2=$(( (port - ip1 * 10000) / 100 ))
+  ip3=$(( port - ip1 * 10000 - ip2 * 100 ))
+  ip=10.${ip1}.${ip2}.${ip3}
+
+  ip tuntap add mode tun dev tun_${port}
+  ip addr add ${ip}/32 dev tun_${port}
+  ip link set dev tun_${port} up
 }
 
-setup_tun 80
-setup_tun 81
-setup_tun 82
-setup_tun 83
+setup_tun 1080
+setup_tun 1081
+setup_tun 1082
+setup_tun 1083
 
-/usr/bin/supervisord
+/usr/bin/supervisord -c /etc/supervisord.conf

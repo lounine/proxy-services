@@ -1,7 +1,22 @@
 {"outbounds":[
   {
+    "tag": "test-container",
+    "protocol": "freedom",
+    "settings": {
+      "redirect": "test:0"
+    }
+  },
+  {
     "tag": "internet",
-    "protocol": "freedom"
+    "protocol": "freedom",
+    "settings": {
+      "finalRules": [
+        {
+          "action": "block",
+          "ip": [ "geoip:private" ]
+        }
+      ]
+    }
   },
   {
     "tag": "block",

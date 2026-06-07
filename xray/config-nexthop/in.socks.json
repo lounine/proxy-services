@@ -3,24 +3,36 @@
     "tag": "in.socks.out.vision.reality",
     "listen": "0.0.0.0",
     "port": 1080,
-    "protocol": "socks"
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
   },
   {
     "tag": "in.socks.out.xhttp.stream-up",
     "listen": "0.0.0.0",
     "port": 1081,
-    "protocol": "socks"
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
   },
   {
     "tag": "in.socks.out.xhttp.packet-up",
     "listen": "0.0.0.0",
     "port": 1082,
-    "protocol": "socks"
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
   },
   {
     "tag": "in.socks.out.cdn.xhttp.packet-up",
     "listen": "0.0.0.0",
     "port": 1083,
-    "protocol": "socks"
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
   }
 ]}

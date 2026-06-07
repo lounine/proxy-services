@@ -2,8 +2,8 @@
   "domainStrategy": "IPOnDemand",
   "rules": [
     {
-      "ip": [ "geoip:private" ],
-      "outboundTag": "block"
+      "ip": [ "172.23.0.21" ],
+      "outboundTag": "test-container"
     },
     {
       "ip": [ "geoip:ru" ],
