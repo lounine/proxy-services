@@ -1,0 +1,56 @@
+{{- define "settings" -}}
+      "address": "{{ index .nexthop.xray.reality.domains 0 }}",
+      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
+      "id": "{{ .params.nexthop.xray.user }}",
+      "flow": "xtls-rprx-vision",
+      "encryption": "none"
+{{- end -}}
+
+{{- define "streamSettings" -}}
+      "network": "raw",
+      "security": "reality",
+      "realitySettings": {
+        "fingerprint": "chrome", 
+        "serverName": "{{ index .nexthop.xray.reality.domains 0 }}",
+        "publicKey": "{{ .nexthop.xray.reality.publicKey }}"
+      }
+{{- end -}}
+
+{"outbounds":[
+  {
+    "tag": "out.vision.reality",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }}
+    }
+  },
+  {
+    "tag": "out.vision.reality.v4",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv4"
+      }
+    }
+  },
+  {
+    "tag": "out.vision.reality.v6",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv6"
+      }
+    }
+  }
+]}

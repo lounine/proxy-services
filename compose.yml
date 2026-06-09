@@ -7,6 +7,8 @@ x-hosts: &extra_hosts
   - "xray:172.22.0.11"
   - "mtg:172.22.0.12"
   - "test:172.22.0.21"
+  - "test-remote:172.23.0.21"
+  - "test-first-hop:172.24.0.21"
 
 services:
 
@@ -75,6 +77,7 @@ services:
       - /dev/net/tun
     volumes:
       - ./test/supervisord.ini:/etc/supervisor.d/supervisord.ini:ro
+      - ./test/bin:/usr/local/bin/test:ro
     extra_hosts: *extra_hosts
     networks:
       lan:

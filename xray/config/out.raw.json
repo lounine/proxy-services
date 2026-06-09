@@ -1,5 +1,9 @@
 {"outbounds":[
   {
+    "tag": "block",
+    "protocol": "blackhole"
+  },
+  {
     "tag": "test-container",
     "protocol": "freedom",
     "settings": {
@@ -17,9 +21,5 @@
         }
       ]
     }
-  },
-  {
-    "tag": "block",
-    "protocol": "blackhole"
   }
 ]}

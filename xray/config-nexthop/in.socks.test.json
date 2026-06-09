@@ -1,0 +1,110 @@
+{"inbounds":[
+  {
+    "tag": "in.socks.test.out.vision.reality",
+    "listen": "0.0.0.0",
+    "port": 9000,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.vision.reality.v4",
+    "listen": "0.0.0.0",
+    "port": 9004,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.vision.reality.v6",
+    "listen": "0.0.0.0",
+    "port": 9006,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.xhttp.stream-up",
+    "listen": "0.0.0.0",
+    "port": 9100,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.xhttp.stream-up.v4",
+    "listen": "0.0.0.0",
+    "port": 9104,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.xhttp.stream-up.v6",
+    "listen": "0.0.0.0",
+    "port": 9106,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.xhttp.packet-up",
+    "listen": "0.0.0.0",
+    "port": 9200,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.xhttp.packet-up.v4",
+    "listen": "0.0.0.0",
+    "port": 9204,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.xhttp.packet-up.v6",
+    "listen": "0.0.0.0",
+    "port": 9206,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.cdn.xhttp.packet-up",
+    "listen": "0.0.0.0",
+    "port": 9300,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.cdn.xhttp.packet-up.v4",
+    "listen": "0.0.0.0",
+    "port": 9304,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  },
+  {
+    "tag": "in.socks.test.out.cdn.xhttp.packet-up.v6",
+    "listen": "0.0.0.0",
+    "port": 9306,
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  }
+]}

@@ -2,7 +2,7 @@
   "domainStrategy": "IPOnDemand",
   "rules": [
     {
-      "ip": [ "172.23.0.21" ],
+      "ip": [ "172.23.0.21", "172.24.0.21" ],
       "outboundTag": "test-container"
     },
     {
