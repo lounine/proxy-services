@@ -2,6 +2,13 @@
 
 set -eu
 
+for file in /usr/local/bin/test/*; do
+  if [ -f "$file" ] && [ -x "$file" ]; then
+    filename=$(basename "$file")
+    ln -sf ./test/"$filename" /usr/local/bin/"${filename%.*}"
+  fi
+done
+
 function setup_tun() {
   port=$1
   ip1=$(( port / 10000 ))
