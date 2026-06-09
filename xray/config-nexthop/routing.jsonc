@@ -22,6 +22,18 @@
       "outboundTag": "out.xhttp.stream-up"
     },
     {
+      "inboundTag": [ "in.socks.test.out.vision.reality" ],
+      "outboundTag": "out.vision.reality"
+    },
+    {
+      "inboundTag": [ "in.socks.test.out.vision.reality.v4" ],
+      "outboundTag": "out.vision.reality.v4"
+    },
+    {
+      "inboundTag": [ "in.socks.test.out.vision.reality.v6" ],
+      "outboundTag": "out.vision.reality.v6"
+    },
+    {
       "inboundTag": [ "in.socks.test.out.xhttp.stream-up" ],
       "outboundTag": "out.xhttp.stream-up"
     },
@@ -56,18 +68,6 @@
     {
       "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up.v6" ],
       "outboundTag": "out.cdn.xhttp.packet-up.v6"
-    },
-    {
-      "inboundTag": [ "in.socks.test.out.vision.reality" ],
-      "outboundTag": "out.vision.reality"
-    },
-    {
-      "inboundTag": [ "in.socks.test.out.vision.reality.v4" ],
-      "outboundTag": "out.vision.reality.v4"
-    },
-    {
-      "inboundTag": [ "in.socks.test.out.vision.reality.v6" ],
-      "outboundTag": "out.vision.reality.v6"
     }
   ]
 }}

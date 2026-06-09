@@ -1,5 +1,6 @@
 {"outbounds":[
   {
+    // This rule comes first to block all traffic that was not explicitly routed
     "tag": "block",
     "protocol": "blackhole"
   },
