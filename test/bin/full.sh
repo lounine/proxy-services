@@ -2,4 +2,127 @@
 
 set -eu
 
-iperf3 --title TEST_1 --bind-dev tun_9000 --time 5 --omit 1 --client test-remote
+if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "$TERM" != 'dumb' ] && [ "$TERM" != 'unknown' ]; then
+  black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); 
+  yellow=$(tput setaf 3); blue=$(tput setaf 4); magenta=$(tput setaf 5); 
+  cyan=$(tput setaf 6); white=$(tput setaf 7)
+  bold=$(tput bold); ul=$(tput smul); reset=$(tput sgr 0)
+else
+  black=''; red=''; green=''; yellow=''; blue=''; magenta=''; cyan=''; white=''
+  bold=''; ul=''; reset=''
+fi
+
+nl=$'\n'
+
+
+function get_socks_port() {
+  local proto=$1
+  local ip=${2:-}
+
+  case "$proto" in
+    "vision.reality" )       socks_port=9000   ;;
+    "xhttp.stream-up" )      socks_port=9100   ;;
+    "xhttp.packet-up" )      socks_port=9200   ;;
+    "cdn.xhttp.packet-up" )  socks_port=9300   ;;
+    *)                      echo "Unknown protocol: $proto";  exit 1   ;;
+  esac
+
+  case "${ip,,}" in
+    ipv4|ip4|v4 )     socks_port=$((socks_port + 4))   ;;
+    ipv6|ip6|v6 )     socks_port=$((socks_port + 6))   ;;
+  esac
+
+  echo $socks_port
+}
+
+function check_internet_access() {
+  URL_204='https://connectivitycheck.gstatic.com/generate_204'
+
+  local port=$1
+  local ip=${2:-}
+  local ip_flag=''
+  [[ ${ip,,} =~ ^(ipv4|ip4|v4)$ ]] && ip_flag='--ipv4'
+  [[ ${ip,,} =~ ^(ipv6|ip6|v6)$ ]] && ip_flag='--ipv6'
+
+  local result=$(curl $ip_flag --silent --connect-timeout 3 -x socks5://xray:$port --head "$URL_204" | head -n 1 | cut -d$' ' -f2)
+
+  [[ "$result" == '204' ]]
+}
+
+function check_speed() {
+  local port=$1
+  local dir=${2:-}
+  local R_flag=''
+  [[ "${dir,,}" == 'down' ]] && R_flag='-R'
+  local json=$(iperf3 --json --bind-dev tun_$port --time 5 --omit 2 $R_flag --client test-remote)
+
+  local speed=$(echo "$json" | jq '.end.sum_received.bits_per_second')
+
+  echo "$speed" | numfmt --to=iec --suffix=b/s
+}
+
+function column () {
+  local format=${1:-}
+  local width=${2:-7}
+  local input; read input
+  if [[ "$input" == '-' ]]; then
+    seq -s '-' 1 $(( width + 3 )) | tr -d '0-9\n'; printf '|'
+  else
+    printf "${format} %${width}s ${reset}|" "$input"
+  fi
+}
+
+function check_connection_and_speed() {
+  local proto=$1
+  local ip=$2
+  local port=$(get_socks_port $proto $ip)
+
+  if check_internet_access $port; then
+    echo 'PASS' | column "${green}" 4
+    check_speed $port up   | column
+    check_speed $port down | column
+  else
+    echo 'FAIL' | column "${red}" 4
+    echo '--' | column "${red}"
+    echo '--' | column "${red}"
+  fi
+}
+
+
+function run_tests_for_protocol() {
+  local proto=$1
+  echo $proto | column "${bold}" 20
+
+  check_connection_and_speed $proto IPv4
+  check_connection_and_speed $proto IPv6
+
+  echo
+}
+
+function run_tests() {
+  echo
+  echo '' | column "${bold}" 20
+  echo 'IP4' | column "${bold}" 4 
+  echo 'up' | column "${bold}"
+  echo 'down' | column "${bold}"
+  echo 'IP6' | column "${bold}" 4
+  echo 'up' | column "${bold}"
+  echo 'down' | column "${bold}"
+  echo
+
+  echo '-' | column '' 20
+  echo '-' | column "${bold}" 4 
+  echo '-' | column "${bold}"
+  echo '-' | column "${bold}"
+  echo '-' | column "${bold}" 4
+  echo '-' | column "${bold}"
+  echo '-' | column "${bold}"
+  echo
+
+  run_tests_for_protocol "vision.reality"
+  run_tests_for_protocol "xhttp.stream-up"
+  run_tests_for_protocol "xhttp.packet-up"
+  run_tests_for_protocol "cdn.xhttp.packet-up"
+}
+
+run_tests
