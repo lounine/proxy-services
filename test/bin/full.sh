@@ -15,6 +15,7 @@ fi
 nl=$'\n'
 
 
+
 function get_socks_port() {
   local proto=$1
   local ip=${2:-}
@@ -44,7 +45,7 @@ function check_internet_access() {
   [[ ${ip,,} =~ ^(ipv4|ip4|v4)$ ]] && ip_flag='--ipv4'
   [[ ${ip,,} =~ ^(ipv6|ip6|v6)$ ]] && ip_flag='--ipv6'
 
-  local result=$(curl $ip_flag --silent --connect-timeout 3 -x socks5://xray:$port --head "$URL_204" | head -n 1 | cut -d$' ' -f2)
+  local result=$(curl $ip_flag --silent --connect-timeout 3 -x "socks5://xray:$port" --head "$URL_204" | head -n 1 | cut -d$' ' -f2)
 
   [[ "$result" == '204' ]]
 }
@@ -54,16 +55,16 @@ function check_speed() {
   local dir=${2:-}
   local R_flag=''
   [[ "${dir,,}" == 'down' ]] && R_flag='-R'
-  local json=$(iperf3 --json --bind-dev tun_$port --time 5 --omit 2 $R_flag --client test-remote)
+  local json=$(iperf3 --json --bind-dev tun_$port --time 3 --omit 2 --connect-timeout 3000 $R_flag --client test-remote)
 
   local speed=$(echo "$json" | jq '.end.sum_received.bits_per_second')
 
-  echo "$speed" | numfmt --to=iec --suffix=b/s
+  echo "$speed" | numfmt --to=si --suffix=b/s | sed -E 's#([0-9.]*)#\1 #'
 }
 
 function column () {
   local format=${1:-}
-  local width=${2:-7}
+  local width=${2:-8}
   local input; read input
   if [[ "$input" == '-' ]]; then
     seq -s '-' 1 $(( width + 3 )) | tr -d '0-9\n'; printf '|'
@@ -93,8 +94,8 @@ function run_tests_for_protocol() {
   local proto=$1
   echo $proto | column "${bold}" 20
 
-  check_connection_and_speed $proto IPv4
-  check_connection_and_speed $proto IPv6
+  check_connection_and_speed $proto 'IPv4'
+  check_connection_and_speed $proto 'IPv6'
 
   echo
 }
@@ -119,10 +120,44 @@ function run_tests() {
   echo '-' | column "${bold}"
   echo
 
-  run_tests_for_protocol "vision.reality"
-  run_tests_for_protocol "xhttp.stream-up"
-  run_tests_for_protocol "xhttp.packet-up"
-  run_tests_for_protocol "cdn.xhttp.packet-up"
+  run_tests_for_protocol 'vision.reality'
+  run_tests_for_protocol 'xhttp.stream-up'
+  run_tests_for_protocol 'xhttp.packet-up'
+  run_tests_for_protocol 'cdn.xhttp.packet-up'
+}
+
+function get_address() {
+  local port=$1
+  local ip=${2:-}
+  local prefix='api'
+  [[ ${ip,,} =~ ^(ipv4|ip4|v4)$ ]] && prefix='api4'
+  [[ ${ip,,} =~ ^(ipv6|ip6|v6)$ ]] && prefix='api6'
+
+  IPIFY_URL="https://${prefix}.ipify.org"
+
+  curl --silent --connect-timeout 5 -x "socks5://xray:${port}" "${IPIFY_URL}"
+}
+
+function print_address() {
+  local ip=${1:-IPv4}
+  local port=$(get_socks_port 'vision.reality')
+
+  local address=$(get_address ${port} ${ip})
+
+  if [[ -n "${address}" ]]; then
+    local domain=$(dig -x "${address}" @1.1.1.1 +short | sed 's/\.*$//' )
+    echo "${bold}${ip}:${reset} ${address} (${domain})"
+  else
+    echo "No ${ip}"
+  fi
+}
+
+function print_addresses() {
+  echo "${bold}Accessing web from addresses:${reset}"
+  print_address 'IPv4'
+  print_address 'IPv6'
 }
 
 run_tests
+echo
+print_addresses
