@@ -7,7 +7,7 @@ RUN <<EOF
   set -ex -o pipefail
 
   apk update && apk add --no-cache \
-    supervisor iproute2 bash curl iperf3 coreutils jq
+    supervisor iproute2 bash curl iperf3 coreutils ncurses jq
   
   ALPINE_ARCH=$(apk --print-arch)
   case "$ALPINE_ARCH" in
