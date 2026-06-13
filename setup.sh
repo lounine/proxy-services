@@ -42,10 +42,7 @@ unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/compose.yml" .
 rm -rf ./setup;     mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/setup" .
 rm -rf ./test;      mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/test" .
-rm -rf ./template;  install -m 755 -d ./template
-mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/nginx" ./template/nginx
-mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/mtg" ./template/mtg
-mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
+rm -rf ./template;  mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/template" .
 
 
 ###########################  INSTALLING DOCKER  ############################

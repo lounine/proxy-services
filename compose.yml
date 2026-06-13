@@ -78,7 +78,7 @@ services:
     devices:
       - /dev/net/tun
     volumes:
-      - ./test/supervisord.ini:/etc/supervisor.d/supervisord.ini:ro
+      - ./config/test/supervisord.ini:/etc/supervisor.d/supervisord.ini:ro
       - ./test/bin:/usr/local/bin/test:ro
     extra_hosts: *extra_hosts
     networks:
