@@ -135,8 +135,10 @@ if [ -d ./template/xray/config ]; then
   rm -rf ./template/xray/config
 fi
 
-if [ -d ./template/xray/config-nexthop ] && [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
-  mv -f ./template/xray/config-nexthop/* ./template/xray/
+if [ -d ./template/xray/config-nexthop ]; then
+  if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
+    mv -f ./template/xray/config-nexthop/* ./template/xray/
+  fi
   rm -rf ./template/xray/config-nexthops
 fi
 
