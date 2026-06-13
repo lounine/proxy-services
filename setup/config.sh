@@ -128,18 +128,25 @@ EOF
 EOF
 
 
+############### Finalizing templates ################
+
+if [ -d ./tempate/xray/config ]; then
+  mv ./tempate/xray/config/* ./tempate/xray/
+  rm -rf ./tempate/xray/config
+fi
+
+if [ -d ./tempate/xray/config-nexthop ] && [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
+  mv -f ./tempate/xray/config-nexthop/* ./tempate/xray/
+  rm -rf ./tempate/xray/config-nexthops
+fi
+
+
 ######### Rendrering configs from templates #########
 
 [ -d ./config ] && rm -rf ./config
 install -m 750 -d ./config
 
 gomplate --input-dir ./template --output-dir ./config
-
-mv ./config/xray/config/* ./config/xray/
-if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
-  mv -f ./config/xray/config-nexthop/* ./config/xray/
-fi
-rm -rf ./config/xray/config ./config/xray/config-nexthop
 
 chmod 750 ./config/*
 chmod 640 ./config/*/*
