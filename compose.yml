@@ -2,10 +2,12 @@ name: proxy-services
 
 # Providing static hosts in order to resolve IPs even when some containers are not yet up:
 x-hosts: &extra_hosts
-  - "nginx:172.22.0.2"
-  - "acme:172.22.0.3"
-  - "xray:172.22.0.11"
-  - "mtg:172.22.0.12"
+  - "haproxy:172.22.0.2"
+  - "nginx:172.22.0.3"
+  - "caddy:172.22.0.10"
+  - "acme:172.22.0.11"
+  - "xray:172.22.0.12"
+  - "mtg:172.22.0.13"
   - "test:172.22.0.22"
   - "test-server:172.22.0.21"
   - "test-remote:172.23.0.21"
@@ -14,22 +16,49 @@ x-hosts: &extra_hosts
 
 services:
 
+  haproxy:
+    image: haproxy:3.4
+    container_name: haproxy
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - ${EXTERNAL_PORT:-443}:443
+    volumes:
+      - ./config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    extra_hosts: *extra_hosts
+    networks:
+      lan:
+        ipv4_address: 172.22.0.2
+        ipv6_address: fd00:0:0:1::2
+
   nginx:
     image: nginx:1.31
     container_name: nginx
     restart: unless-stopped
     ports:
-      - 80:80
-      - ${EXTERNAL_PORT:-443}:443
+      # - 80:80
+      # - ${EXTERNAL_PORT:-443}:443
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs:/etc/nginx/certs:ro
     extra_hosts: *extra_hosts
     networks:
       lan:
-        ipv4_address: 172.22.0.2
-        ipv6_address: fd00:0:0:1::2
-        
+        ipv4_address: 172.22.0.3
+        ipv6_address: fd00:0:0:1::3
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    volumes:
+      - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    extra_hosts: *extra_hosts
+    networks:
+      lan:
+        ipv4_address: 172.22.0.10
+        ipv6_address: fd00:0:0:1::10
+
   acme:
     image: neilpang/acme.sh:3.1.3
     container_name: acme
@@ -40,8 +69,8 @@ services:
       - ./acme:/acme.sh:rw
     networks:
       lan:
-        ipv4_address: 172.22.0.3
-        ipv6_address: fd00:0:0:1::3
+        ipv4_address: 172.22.0.11
+        ipv6_address: fd00:0:0:1::11
 
   xray:
     container_name: xray
@@ -55,8 +84,8 @@ services:
     extra_hosts: *extra_hosts
     networks:
       lan:
-        ipv4_address: 172.22.0.11
-        ipv6_address: fd00:0:0:1::11
+        ipv4_address: 172.22.0.12
+        ipv6_address: fd00:0:0:1::12
 
   mtg:
     image: nineseconds/mtg
@@ -67,8 +96,8 @@ services:
     extra_hosts: *extra_hosts
     networks:
       lan:
-        ipv4_address: 172.22.0.12
-        ipv6_address: fd00:0:0:1::12
+        ipv4_address: 172.22.0.13
+        ipv6_address: fd00:0:0:1::13
 
   test-server:
     container_name: test-server

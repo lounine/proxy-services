@@ -40,10 +40,10 @@ curl -o "$TEMP_DIR/sources.zip" \
      -fsSL https://github.com/lounine/proxy-services/archive/refs/heads/$BRANCH_NAME.zip
 unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/compose.yml" .
-rm -rf ./setup;     mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/setup" .
-rm -rf ./template;  mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/template" .
-rm -rf ./test;      mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/test" .
-rm -rf ./test-server;      mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/test-server" .
+rm -rf ./setup;         mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/setup" .
+rm -rf ./template;      mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/template" .
+rm -rf ./test;          mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/test" .
+rm -rf ./test-server;   mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/test-server" .
 
 
 ###########################  INSTALLING DOCKER  ############################
