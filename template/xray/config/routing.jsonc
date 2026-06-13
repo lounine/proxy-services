@@ -2,6 +2,7 @@
   "domainStrategy": "IPOnDemand",
   "rules": [
     {
+      // Both test-remote (172.23.0.21) and test-first-hop (172.24.0.21) end here
       "ip": [ "172.23.0.21", "172.24.0.21" ],
       "outboundTag": "test-container"
     },

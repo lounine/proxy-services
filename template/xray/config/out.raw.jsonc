@@ -8,7 +8,7 @@
     "tag": "test-container",
     "protocol": "freedom",
     "settings": {
-      "redirect": "test:0"
+      "redirect": "test-server:0"
     }
   },
   {

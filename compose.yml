@@ -6,9 +6,11 @@ x-hosts: &extra_hosts
   - "acme:172.22.0.3"
   - "xray:172.22.0.11"
   - "mtg:172.22.0.12"
-  - "test:172.22.0.21"
+  - "test:172.22.0.22"
+  - "test-server:172.22.0.21"
   - "test-remote:172.23.0.21"
   - "test-first-hop:172.24.0.21"
+
 
 services:
 
@@ -68,6 +70,20 @@ services:
         ipv4_address: 172.22.0.12
         ipv6_address: fd00:0:0:1::12
 
+  test-server:
+    container_name: test-server
+    build:
+      context: ./test-server
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./config/test-server/supervisord.ini:/etc/supervisor.d/supervisord.ini:ro
+    networks:
+      lan:
+        ipv4_address: 172.22.0.21
+        ipv6_address: fd00:0:0:1::21
+        
   test:
     container_name: test
     build:
@@ -83,8 +99,8 @@ services:
     extra_hosts: *extra_hosts
     networks:
       lan:
-        ipv4_address: 172.22.0.21
-        ipv6_address: fd00:0:0:1::21
+        ipv4_address: 172.22.0.22
+        ipv6_address: fd00:0:0:1::22
 
 
 networks:

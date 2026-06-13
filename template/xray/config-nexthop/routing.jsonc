@@ -2,6 +2,7 @@
   "domainStrategy": "IPOnDemand",
   "rules": [
     {
+      // Landing test-first-hop (172.24.0.21) here, passing test-remote (172.23.0.21) upstream
       "ip": [ "172.24.0.21" ],
       "outboundTag": "test-container"
     },
