@@ -152,6 +152,7 @@ gomplate --input-dir ./template --output-dir ./config
 
 chmod 750 ./config/*
 chmod 640 ./config/*/*
+sudo chown :99 ./config/haproxy/*
 sudo chown :65532 ./config/xray
 sudo chown :65532 ./config/xray/*
 
