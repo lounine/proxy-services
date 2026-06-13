@@ -127,37 +127,25 @@ EOF
 {{ if has .local "port" }}EXTERNAL_PORT={{ .local.port }}{{ end }}
 EOF
 
+
+######### Rendrering configs from templates #########
+
 [ -d ./config ] && rm -rf ./config
 install -m 750 -d ./config
 
+gomplate --input-dir ./template --output-dir ./config
 
-########## Preparing nginx configuration ##########
-
-install -m 750 -d ./config/nginx
-cat ./template/nginx/nginx.conf | gomplate > ./config/nginx/nginx.conf
-chmod 640 ./config/nginx/nginx.conf
-
-
-########### Preparing Xray configuration ############
-
-install -m 750 -d ./config/xray;  
-
-gomplate --input-dir ./template/xray/config --output-dir ./config/xray
+mv ./config/xray/config/* ./config/xray/
 if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
-  gomplate --input-dir ./template/xray/config-nexthop --output-dir ./config/xray
+  mv -f ./config/xray/config-nexthop/* ./config/xray/
 fi
+rm -rf ./config/xray/config ./config/xray/config-nexthop
 
-# Ensure xray (group id 65532) can read config files and we still can write them:
+chmod 750 ./config/*
+chmod 640 ./config/*/*
 sudo chown :65532 ./config/xray
 sudo chown :65532 ./config/xray/*
-chmod 640 ./config/xray/*
 
-
-############ Preparing MTG configuration ############
-
-install -m 750 -d ./config/mtg
-cat ./template/mtg/config.toml | gomplate > ./config/mtg/config.toml
-chmod 640 ./config/mtg/config.toml
 
 ################# All configs ready #################
 
