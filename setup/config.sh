@@ -139,7 +139,7 @@ if [ -d ./template/xray/config-nexthop ]; then
   if [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
     mv -f ./template/xray/config-nexthop/* ./template/xray/
   fi
-  rm -rf ./template/xray/config-nexthops
+  rm -rf ./template/xray/config-nexthop
 fi
 
 
