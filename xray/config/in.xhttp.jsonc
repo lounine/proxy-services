@@ -1,17 +1,47 @@
-{"inbounds":[{
-  "tag": "in.xhttp",
-  "listen": "0.0.0.0",
-  "port": 2443,
-  "protocol": "vless",
-  "settings": {
-    "decryption": "none",
-    "clients": {{ .users.xray |
-      jq `[.clients[] | {email:.name, id:.secret}]` | toJSON }}
+{{- define "settings" -}}
+      "decryption": "none",
+      "clients": {{ .users.xray | jq `[.clients[] | {email:.name, id:.secret}]` | toJSON }}
+{{- end -}}
+
+{{- define "streamSettings" -}}
+      "network": "xhttp",
+      "xhttpSettings": {
+        "path": "{{ .local.xray.xhttp.path }}"
+      }
+{{- end -}}
+
+{"inbounds":[
+  {
+    "tag": "in.xhttp.insecure",
+    "listen": "0.0.0.0",
+    "port": 2443,
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }}
+    }
   },
-  "streamSettings": {
-    "network": "xhttp",
-    "xhttpSettings": {
-      "path": "{{ .local.xray.xhttp.path }}"
+  {
+    "tag": "in.xhttp.tls",
+    "listen": "0.0.0.0",
+    "port": 3443,
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "security": "tls",
+      "tlsSettings": {
+        "serverName": "",
+        "certificates": {{ .local.xray.xhttp |
+          jq `[.domains[] | {
+            certificateFile: "/usr/local/share/certs/" + . + ".crt", 
+            keyFile: "/usr/local/share/certs/" + . + ".key"
+          }]` | toJSON }}
+      }
     }
   }
-}]}
+]}

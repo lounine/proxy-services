@@ -1,6 +1,5 @@
 {{- define "settings" -}}
       "address": "{{ index .nexthop.xray.xhttp.domains 0 }}",
-      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
       "id": "{{ .params.nexthop.xray.user }}",
       "encryption": "none"
 {{- end -}}
@@ -19,9 +18,10 @@
 
 {"outbounds":[
   {
-    "tag": "out.xhttp.stream-up",
+    "tag": "out.xhttp.stream-up.direct",
     "protocol": "vless",
     "settings": {
+      "port": 8443,
       {{ template "settings" . }} 
     },
     "streamSettings": {
@@ -29,9 +29,10 @@
     }
   },
   {
-    "tag": "out.xhttp.stream-up.v4",
+    "tag": "out.xhttp.stream-up.direct.v4",
     "protocol": "vless",
     "settings": {
+      "port": 8443,
       {{ template "settings" . }} 
     },
     "streamSettings": {
@@ -42,9 +43,50 @@
     }
   },
   {
-    "tag": "out.xhttp.stream-up.v6",
+    "tag": "out.xhttp.stream-up.direct.v6",
     "protocol": "vless",
     "settings": {
+      "port": 8443,
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv6"
+      }
+    }
+  },
+  
+  {
+    "tag": "out.xhttp.stream-up.nginx",
+    "protocol": "vless",
+    "settings": {
+      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }}
+    }
+  },
+  {
+    "tag": "out.xhttp.stream-up.nginx.v4",
+    "protocol": "vless",
+    "settings": {
+      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv4"
+      }
+    }
+  },
+  {
+    "tag": "out.xhttp.stream-up.nginx.v6",
+    "protocol": "vless",
+    "settings": {
+      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
       {{ template "settings" . }} 
     },
     "streamSettings": {

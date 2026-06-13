@@ -15,17 +15,19 @@ fi
 nl=$'\n'
 
 
-
 function get_socks_port() {
   local proto=$1
   local ip=${2:-}
 
   case "$proto" in
-    "vision.reality" )       socks_port=9000   ;;
-    "xhttp.stream-up" )      socks_port=9100   ;;
-    "xhttp.packet-up" )      socks_port=9200   ;;
-    "cdn.xhttp.packet-up" )  socks_port=9300   ;;
-    *)                      echo "Unknown protocol: $proto";  exit 1   ;;
+    "vision.reality" )              socks_port=9000   ;;
+    "xhttp.stream-up.direct" )      socks_port=9100   ;;
+    "xhttp.stream-up.nginx" )       socks_port=9110   ;;
+    "xhttp.packet-up.direct" )      socks_port=9200   ;;
+    "xhttp.packet-up.nginx" )       socks_port=9210   ;;
+    "cdn.xhttp.packet-up.direct" )  socks_port=9300   ;;
+    "cdn.xhttp.packet-up.nginx" )   socks_port=9310   ;;
+    *)                              echo "Unknown protocol: $proto";  exit 1   ;;
   esac
 
   case "${ip,,}" in
@@ -45,7 +47,7 @@ function check_internet_access() {
   [[ ${ip,,} =~ ^(ipv4|ip4|v4)$ ]] && ip_flag='--ipv4'
   [[ ${ip,,} =~ ^(ipv6|ip6|v6)$ ]] && ip_flag='--ipv6'
 
-  local result=$(curl $ip_flag --silent --connect-timeout 3 -x "socks5://xray:$port" --head "$URL_204" | head -n 1 | cut -d$' ' -f2)
+  local result=$(curl $ip_flag --silent --connect-timeout 5 -x "socks5://xray:$port" --head "$URL_204" | head -n 1 | cut -d$' ' -f2)
 
   [[ "$result" == '204' ]]
 }
@@ -92,7 +94,8 @@ function check_connection_and_speed() {
 
 function run_tests_for_protocol() {
   local proto=$1
-  echo $proto | column "${bold}" 20
+  local title_length=$2
+  echo $proto | column "${bold}" $title_length
 
   check_connection_and_speed $proto 'IPv4'
   check_connection_and_speed $proto 'IPv6'
@@ -101,8 +104,26 @@ function run_tests_for_protocol() {
 }
 
 function run_tests() {
+  local protocols=(
+    'vision.reality'
+    # 'xhttp.stream-up.nginx'
+    # 'xhttp.stream-up.direct'
+    'xhttp.packet-up.nginx'
+    'xhttp.packet-up.direct'
+    'cdn.xhttp.packet-up.nginx'
+    'cdn.xhttp.packet-up.direct'
+  )
+
+  # calculate longest protocol name
+  local title_length=0
+  for proto in "${protocols[@]}"; do
+    if (( ${#proto} > title_length )); then
+      title_length=${#proto}
+    fi
+  done
+
   echo
-  echo '' | column "${bold}" 20
+  echo '' | column "${bold}" $title_length
   echo 'IP4' | column "${bold}" 4 
   echo 'up' | column "${bold}"
   echo 'down' | column "${bold}"
@@ -111,7 +132,7 @@ function run_tests() {
   echo 'down' | column "${bold}"
   echo
 
-  echo '-' | column '' 20
+  echo '-' | column '' $title_length
   echo '-' | column "${bold}" 4 
   echo '-' | column "${bold}"
   echo '-' | column "${bold}"
@@ -120,10 +141,9 @@ function run_tests() {
   echo '-' | column "${bold}"
   echo
 
-  run_tests_for_protocol 'vision.reality'
-  run_tests_for_protocol 'xhttp.stream-up'
-  run_tests_for_protocol 'xhttp.packet-up'
-  run_tests_for_protocol 'cdn.xhttp.packet-up'
+  for proto in "${protocols[@]}"; do
+    run_tests_for_protocol "$proto" $title_length
+  done
 }
 
 function get_address() {
@@ -145,8 +165,8 @@ function print_address() {
   local address=$(get_address ${port} ${ip})
 
   if [[ -n "${address}" ]]; then
-    local domain=$(dig -x "${address}" @1.1.1.1 +short | sed 's/\.*$//' )
-    echo "${bold}${ip}:${reset} ${address} (${domain})"
+    local host=$(dig -x "${address}" @1.1.1.1 +short | sed 's/\.*$//' )
+    echo "${bold}${ip}:${reset} ${address} (${host})"
   else
     echo "No ${ip}"
   fi

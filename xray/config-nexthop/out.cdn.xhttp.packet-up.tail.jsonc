@@ -1,6 +1,5 @@
 {{- define "settings" -}}
       "address": "{{ index .nexthop.xray.xhttp.domains 1 }}",
-      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
       "id": "{{ .params.nexthop.xray.user }}",
       "encryption": "none"
 {{- end -}}
@@ -19,10 +18,11 @@
 
 
 {"outbounds":[
-  {
-    "tag": "out.cdn.xhttp.packet-up",
+{
+    "tag": "out.cdn.xhttp.packet-up.direct",
     "protocol": "vless",
     "settings": {
+      "port": 8443,
       {{ template "settings" . }} 
     },
     "streamSettings": {
@@ -30,9 +30,10 @@
     }
   },
   {
-    "tag": "out.cdn.xhttp.packet-up.v4",
+    "tag": "out.cdn.xhttp.packet-up.direct.v4",
     "protocol": "vless",
     "settings": {
+      "port": 8443,
       {{ template "settings" . }} 
     },
     "streamSettings": {
@@ -43,9 +44,50 @@
     }
   },
   {
-    "tag": "out.cdn.xhttp.packet-up.v6",
+    "tag": "out.cdn.xhttp.packet-up.direct.v6",
     "protocol": "vless",
     "settings": {
+      "port": 8443,
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv6"
+      }
+    }
+  },
+
+  {
+    "tag": "out.cdn.xhttp.packet-up.nginx",
+    "protocol": "vless",
+    "settings": {
+      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }}
+    }
+  },
+  {
+    "tag": "out.cdn.xhttp.packet-up.nginx.v4",
+    "protocol": "vless",
+    "settings": {
+      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv4"
+      }
+    }
+  },
+  {
+    "tag": "out.cdn.xhttp.packet-up.nginx.v6",
+    "protocol": "vless",
+    "settings": {
+      "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
       {{ template "settings" . }} 
     },
     "streamSettings": {

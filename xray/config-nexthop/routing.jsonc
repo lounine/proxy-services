@@ -14,13 +14,15 @@
       "outboundTag": "out.vision.reality"
     },
     {
-      "inboundTag": [ "in.xhttp" ],
+      "inboundTag": [ "in.xhttp.insecure", "in.socks.tls" ],
       "outboundTag": "out.xhttp.stream-up"
     },
     {
       "inboundTag": [ "in.socks" ],
       "outboundTag": "out.xhttp.stream-up"
     },
+
+
     {
       "inboundTag": [ "in.socks.test.out.vision.reality" ],
       "outboundTag": "out.vision.reality"
@@ -33,41 +35,86 @@
       "inboundTag": [ "in.socks.test.out.vision.reality.v6" ],
       "outboundTag": "out.vision.reality.v6"
     },
+
+
     {
-      "inboundTag": [ "in.socks.test.out.xhttp.stream-up" ],
-      "outboundTag": "out.xhttp.stream-up"
+      "inboundTag": [ "in.socks.test.out.xhttp.stream-up.direct" ],
+      "outboundTag": "out.xhttp.stream-up.direct"
     },
     {
-      "inboundTag": [ "in.socks.test.out.xhttp.stream-up.v4" ],
-      "outboundTag": "out.xhttp.stream-up.v4"
+      "inboundTag": [ "in.socks.test.out.xhttp.stream-up.direct.v4" ],
+      "outboundTag": "out.xhttp.stream-up.direct.v4"
     },
     {
-      "inboundTag": [ "in.socks.test.out.xhttp.stream-up.v6" ],
-      "outboundTag": "out.xhttp.stream-up.v6"
+      "inboundTag": [ "in.socks.test.out.xhttp.stream-up.direct.v6" ],
+      "outboundTag": "out.xhttp.stream-up.direct.v6"
+    },
+    
+    {
+      "inboundTag": [ "in.socks.test.out.xhttp.stream-up.nginx" ],
+      "outboundTag": "out.xhttp.stream-up.nginx"
     },
     {
-      "inboundTag": [ "in.socks.test.out.xhttp.packet-up" ],
-      "outboundTag": "out.xhttp.packet-up"
+      "inboundTag": [ "in.socks.test.out.xhttp.stream-up.nginx.v4" ],
+      "outboundTag": "out.xhttp.stream-up.nginx.v4"
     },
     {
-      "inboundTag": [ "in.socks.test.out.xhttp.packet-up.v4" ],
-      "outboundTag": "out.xhttp.packet-up.v4"
+      "inboundTag": [ "in.socks.test.out.xhttp.stream-up.nginx.v6" ],
+      "outboundTag": "out.xhttp.stream-up.nginx.v6"
+    },
+
+
+    {
+      "inboundTag": [ "in.socks.test.out.xhttp.packet-up.direct" ],
+      "outboundTag": "out.xhttp.packet-up.direct"
     },
     {
-      "inboundTag": [ "in.socks.test.out.xhttp.packet-up.v6" ],
-      "outboundTag": "out.xhttp.packet-up.v6"
+      "inboundTag": [ "in.socks.test.out.xhttp.packet-up.direct.v4" ],
+      "outboundTag": "out.xhttp.packet-up.direct.v4"
     },
     {
-      "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up" ],
-      "outboundTag": "out.cdn.xhttp.packet-up"
+      "inboundTag": [ "in.socks.test.out.xhttp.packet-up.direct.v6" ],
+      "outboundTag": "out.xhttp.packet-up.direct.v6"
+    },
+
+    {
+      "inboundTag": [ "in.socks.test.out.xhttp.packet-up.nginx" ],
+      "outboundTag": "out.xhttp.packet-up.nginx"
     },
     {
-      "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up.v4" ],
-      "outboundTag": "out.cdn.xhttp.packet-up.v4"
+      "inboundTag": [ "in.socks.test.out.xhttp.packet-up.nginx.v4" ],
+      "outboundTag": "out.xhttp.packet-up.nginx.v4"
     },
     {
-      "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up.v6" ],
-      "outboundTag": "out.cdn.xhttp.packet-up.v6"
+      "inboundTag": [ "in.socks.test.out.xhttp.packet-up.nginx.v6" ],
+      "outboundTag": "out.xhttp.packet-up.nginx.v6"
+    },
+
+
+    {
+      "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up.direct" ],
+      "outboundTag": "out.cdn.xhttp.packet-up.direct"
+    },
+    {
+      "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up.direct.v4" ],
+      "outboundTag": "out.cdn.xhttp.packet-up.direct.v4"
+    },
+    {
+      "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up.direct.v6" ],
+      "outboundTag": "out.cdn.xhttp.packet-up.direct.v6"
+    },
+    
+    {
+      "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up.nginx" ],
+      "outboundTag": "out.cdn.xhttp.packet-up.nginx"
+    },
+    {
+      "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up.nginx.v4" ],
+      "outboundTag": "out.cdn.xhttp.packet-up.nginx.v4"
+    },
+    {
+      "inboundTag": [ "in.socks.test.out.cdn.xhttp.packet-up.nginx.v6" ],
+      "outboundTag": "out.cdn.xhttp.packet-up.nginx.v6"
     }
   ]
 }}

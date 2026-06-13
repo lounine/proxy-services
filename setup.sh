@@ -4,7 +4,7 @@ set -eu
 
 BRANCH_NAME='self-steal'
 
-install -m 0755 -d $HOME/.proxy_services
+install -m 755 -d $HOME/.proxy_services
 cd $HOME/.proxy_services
 
 
@@ -22,7 +22,7 @@ if [ ! -f .installed-system-packages ]; then
   echo "Installing gomplate... "
   sudo curl -o /usr/local/bin/gomplate \
         -fsSL https://github.com/hairyhenderson/gomplate/releases/latest/download/gomplate_linux-${ARCH}
-  sudo chmod 0755 /usr/local/bin/gomplate
+  sudo chmod 755 /usr/local/bin/gomplate
 
   touch .installed-system-packages
 fi
@@ -42,7 +42,7 @@ unzip -q "$TEMP_DIR/sources.zip" -d "$TEMP_DIR"
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/compose.yml" .
 rm -rf ./setup;     mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/setup" .
 rm -rf ./test;      mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/test" .
-rm -rf ./template;  install -m 0755 -d ./template
+rm -rf ./template;  install -m 755 -d ./template
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/nginx" ./template/nginx
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/mtg" ./template/mtg
 mv "$TEMP_DIR/proxy-services-$BRANCH_NAME/xray" ./template/xray
@@ -58,9 +58,9 @@ fi
 
 ##########################  SETTING UP SERVICES  ###########################
 
-install -m 0750 -d ./certs
-sudo chown :101 ./certs     # ensure us and nginx (group id 101) can list certs
-install -m 0750 -d ./acme
+install -m 750 -d ./acme
+install -m 550 -d ./certs
+sudo chown 101:65532 ./certs     # ensure nginx and xray can both list certs
 
 ./setup/config.sh "$@"
 

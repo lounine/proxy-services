@@ -45,6 +45,8 @@ services:
     container_name: xray
     image: ghcr.io/xtls/xray-core
     restart: unless-stopped
+    ports:
+      - 8443:3443
     volumes:
       - ./config/xray/:/usr/local/etc/xray/:ro
       - ./certs/:/usr/local/share/certs/:ro

@@ -31,10 +31,12 @@ domains=$( gomplate << 'EOF'
 EOF
 )
 
+# to grant access to nginx (101) and xray (65532)
+certs_reload_cmd='chown 101:65532 /certs/*; chmod 440 /certs/*'
+
 for domain in $domains; do
   echo "${green}Issuing certificate for $domain:${reset}"
   docker exec acme --issue --server letsencrypt --standalone -d $domain \
                    --fullchain-file /certs/$domain.crt --key-file /certs/$domain.key \
-                   --reloadcmd 'chown 101:101 /certs/*' || : # already issued certificates provoke error here
-                                #nginx user and group
+                   --reloadcmd "$certs_reload_cmd" || : # already issued certificates provoke error here
 done

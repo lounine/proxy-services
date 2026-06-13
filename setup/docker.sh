@@ -25,7 +25,7 @@ DOCKER_GPG='/etc/apt/keyrings/docker.gpg'
 DOCKER_SOURCES='/etc/apt/sources.list.d/docker.list'
 OS_RELEASE=$(. /etc/os-release && echo $VERSION_CODENAME)
 
-install -m 0755 -d '/etc/apt/keyrings'
+install -m 755 -d '/etc/apt/keyrings'
 
 if [ ! -f $DOCKER_GPG ]; then
   curl -fsSL $REPO/gpg | gpg --dearmor -o $DOCKER_GPG

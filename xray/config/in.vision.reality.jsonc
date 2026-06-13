@@ -14,10 +14,9 @@
     "realitySettings": {
       "show": {{ eq .log.level "debug" }},
       "target": "nginx:8443",
-      "serverNames": [ 
-{{- range $i, $domain := .local.xray.reality.domains}}
-{{- if $i }},{{ end }} {{ $domain | quote }}
-{{- end }} ],
+      "serverNames": [ {{ range $i, $domain := .local.xray.reality.domains }}
+                       {{- if $i }}, {{ end }}{{ $domain | quote }}
+                       {{- end }} ],
       "privateKey": "{{ .local.xray.reality.privateKey }}",
       "shortIds": [ "" ]
     }
