@@ -130,14 +130,14 @@ EOF
 
 ############### Finalizing templates ################
 
-if [ -d ./tempate/xray/config ]; then
-  mv ./tempate/xray/config/* ./tempate/xray/
-  rm -rf ./tempate/xray/config
+if [ -d ./template/xray/config ]; then
+  mv ./template/xray/config/* ./template/xray/
+  rm -rf ./template/xray/config
 fi
 
-if [ -d ./tempate/xray/config-nexthop ] && [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
-  mv -f ./tempate/xray/config-nexthop/* ./tempate/xray/
-  rm -rf ./tempate/xray/config-nexthops
+if [ -d ./template/xray/config-nexthop ] && [ -n "$(gomplate -i '{{ .nexthop }}')" ]; then
+  mv -f ./template/xray/config-nexthop/* ./template/xray/
+  rm -rf ./template/xray/config-nexthops
 fi
 
 
