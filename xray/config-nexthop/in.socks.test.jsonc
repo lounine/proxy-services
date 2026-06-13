@@ -41,17 +41,17 @@
   },
 
   {
-    "tag": "in.socks.test.out.xhttp.stream-up.nginx",
+    "tag": "in.socks.test.out.xhttp.stream-up.via-nginx",
     "port": 9110,
     {{ template "common" . }}
   },
   {
-    "tag": "in.socks.test.out.xhttp.stream-up.nginx.v4",
+    "tag": "in.socks.test.out.xhttp.stream-up.via-nginx.v4",
     "port": 9114,
     {{ template "common" . }}
   },
   {
-    "tag": "in.socks.test.out.xhttp.stream-up.nginx.v6",
+    "tag": "in.socks.test.out.xhttp.stream-up.via-nginx.v6",
     "port": 9116,
     {{ template "common" . }}
   },
@@ -74,17 +74,17 @@
   },
 
   {
-    "tag": "in.socks.test.out.xhttp.packet-up.nginx",
+    "tag": "in.socks.test.out.xhttp.packet-up.via-nginx",
     "port": 9210,
     {{ template "common" . }}
   },
   {
-    "tag": "in.socks.test.out.xhttp.packet-up.nginx.v4",
+    "tag": "in.socks.test.out.xhttp.packet-up.via-nginx.v4",
     "port": 9214,
     {{ template "common" . }}
   },
   {
-    "tag": "in.socks.test.out.xhttp.packet-up.nginx.v6",
+    "tag": "in.socks.test.out.xhttp.packet-up.via-nginx.v6",
     "port": 9216,
     {{ template "common" . }}
   },
@@ -107,17 +107,17 @@
   },
 
   {
-    "tag": "in.socks.test.out.cdn.xhttp.packet-up.nginx",
+    "tag": "in.socks.test.out.cdn.xhttp.packet-up.via-nginx",
     "port": 9310,
     {{ template "common" . }}
   },
   {
-    "tag": "in.socks.test.out.cdn.xhttp.packet-up.nginx.v4",
+    "tag": "in.socks.test.out.cdn.xhttp.packet-up.via-nginx.v4",
     "port": 9314,
     {{ template "common" . }}
   },
   {
-    "tag": "in.socks.test.out.cdn.xhttp.packet-up.nginx.v6",
+    "tag": "in.socks.test.out.cdn.xhttp.packet-up.via-nginx.v6",
     "port": 9316,
     {{ template "common" . }}
   }

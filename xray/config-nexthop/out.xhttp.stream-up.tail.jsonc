@@ -58,7 +58,7 @@
   },
   
   {
-    "tag": "out.xhttp.stream-up.nginx",
+    "tag": "out.xhttp.stream-up.via-nginx",
     "protocol": "vless",
     "settings": {
       "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
@@ -69,7 +69,7 @@
     }
   },
   {
-    "tag": "out.xhttp.stream-up.nginx.v4",
+    "tag": "out.xhttp.stream-up.via-nginx.v4",
     "protocol": "vless",
     "settings": {
       "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
@@ -83,7 +83,7 @@
     }
   },
   {
-    "tag": "out.xhttp.stream-up.nginx.v6",
+    "tag": "out.xhttp.stream-up.via-nginx.v6",
     "protocol": "vless",
     "settings": {
       "port": {{ if has .nexthop "port" }}{{ .nexthop.port }}{{ else }}443{{ end }},
