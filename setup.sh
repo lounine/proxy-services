@@ -4,7 +4,7 @@ set -eu
 
 BRANCH_NAME='self-steal'
 
-install -m 755 -d $HOME/.proxy_services
+[ ! -d $HOME/.proxy_services ] || install -m 755 -d $HOME/.proxy_services
 cd $HOME/.proxy_services
 
 
@@ -58,8 +58,8 @@ fi
 
 ##########################  SETTING UP SERVICES  ###########################
 
-install -m 750 -d ./acme
-install -m 550 -d ./certs
+[ ! -d ./acme ]  || install -m 750 -d ./acme
+[ ! -d ./certs ] || install -m 550 -d ./certs
 sudo chown 101:65532 ./certs     # ensure nginx and xray can both list certs
 
 ./setup/config.sh "$@"
