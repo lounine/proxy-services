@@ -57,8 +57,7 @@ fi
 ##########################  SETTING UP SERVICES  ###########################
 
 [ -d ./acme ]  || install -m 750 -d ./acme
-[ -d ./certs ] || install -m 550 -d ./certs
-sudo chown 101:65532 ./certs     # ensure nginx and xray can both list certs
+[ -d ./certs ] || install -m 755 -d ./certs   # ensure access for nginx, xray and haproxy
 
 ./setup/config.sh "$@"
 

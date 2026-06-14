@@ -20,14 +20,13 @@ function get_socks_port() {
   local ip=${2:-}
 
   case "$proto" in
-    "vision.reality" )                  socks_port=9000   ;;
-    "xhttp.stream-up.direct" )          socks_port=9100   ;;
-    "xhttp.stream-up.via-nginx" )       socks_port=9110   ;;
-    "xhttp.packet-up.direct" )          socks_port=9200   ;;
-    "xhttp.packet-up.via-nginx" )       socks_port=9210   ;;
-    "cdn.xhttp.packet-up.direct" )      socks_port=9300   ;;
-    "cdn.xhttp.packet-up.via-nginx" )   socks_port=9310   ;;
-    *)                              echo "Unknown protocol: $proto";  exit 1   ;;
+    'vision.reality' )    socks_port=9000   ;;
+    'xhttp.xray' )        socks_port=9100   ;;
+    'xhttp.haproxy' )     socks_port=9200   ;;
+    'xhttp.nginx' )       socks_port=9300   ;;
+    'xhttp.caddy' )       socks_port=9400   ;;
+    'xhttp.cdn' )         socks_port=9500   ;;
+    *)                    echo "Unknown protocol: $proto";  exit 1   ;;
   esac
 
   case "${ip,,}" in
@@ -106,12 +105,11 @@ function run_tests_for_protocol() {
 function run_tests() {
   local protocols=(
     'vision.reality'
-    # 'xhttp.stream-up.direct'
-    # 'xhttp.stream-up.via-nginx'
-    'xhttp.packet-up.direct'
-    'xhttp.packet-up.via-nginx'
-    'cdn.xhttp.packet-up.direct'
-    'cdn.xhttp.packet-up.via-nginx'
+    'xhttp.xray'
+    'xhttp.haproxy'
+    'xhttp.caddy'
+    'xhttp.nginx'
+    'xhttp.cdn'
   )
 
   # calculate longest protocol name

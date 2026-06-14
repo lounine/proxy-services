@@ -1,0 +1,58 @@
+{{- define "settings" -}}
+      "address": "{{ index .nexthop.xray.xhttp.domains.cdn 0 }}",
+      "port": 443,
+      "id": "{{ .params.nexthop.xray.user }}",
+      "encryption": "none"
+{{- end -}}
+
+{{- define "streamSettings" -}}
+      "network": "xhttp",
+      "xhttpSettings": {
+        "path": "{{ .nexthop.xray.xhttp.path }}",
+        "mode": "packet-up"
+      },
+      "security": "tls",
+      "tlsSettings": {
+        "fingerprint": "chrome"
+      }
+{{- end -}}
+
+
+{"outbounds":[
+  {
+    "tag": "out.xhttp.cdn",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }}
+    }
+  },
+  {
+    "tag": "out.xhttp.cdn.v4",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv4"
+      }
+    }
+  },
+  {
+    "tag": "out.xhttp.cdn.v6",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv6"
+      }
+    }
+  }
+]}

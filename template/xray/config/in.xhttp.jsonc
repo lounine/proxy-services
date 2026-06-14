@@ -36,10 +36,10 @@
       "security": "tls",
       "tlsSettings": {
         "serverName": "",
-        "certificates": {{ .local.xray.xhttp |
-          jq `[.domains[] | {
-            certificateFile: "/usr/local/share/certs/" + . + ".crt", 
-            keyFile: "/usr/local/share/certs/" + . + ".key"
+        "certificates": {{ .local.xray.xhttp.domains.xray |
+          jq `[.[] | {
+            certificateFile: "/certs/" + . + ".crt", 
+            keyFile: "/certs/" + . + ".key"
           }]` | toJSON }}
       }
     }

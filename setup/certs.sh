@@ -26,17 +26,17 @@ docker exec acme --register-account --server letsencrypt -m "$email"
 
 domains=$( gomplate << 'EOF'
   {{ join .local.xray.reality.domains " " }}
-  {{ join .local.xray.xhttp.domains " " }}
+  {{ join .local.xray.xhttp.domains.xray " " }}
+  {{ join .local.xray.xhttp.domains.nginx " " }}
+  {{ join .local.xray.xhttp.domains.haproxy " " }}
+  {{ join .local.xray.xhttp.domains.cdn " " }}
   {{ .params.telegram.domain }}
 EOF
 )
-
-# to grant access to nginx (101) and xray (65532)
-certs_reload_cmd='chown 101:65532 /certs/*; chmod 440 /certs/*'
 
 for domain in $domains; do
   echo "${green}Issuing certificate for $domain:${reset}"
   docker exec acme --issue --server letsencrypt --standalone -d $domain \
                    --fullchain-file /certs/$domain.crt --key-file /certs/$domain.key \
-                   --reloadcmd "$certs_reload_cmd" || : # already issued certificates provoke error here
+                   --reloadcmd 'chmod 640 /certs/*' || : # already issued certificates provoke error here
 done
