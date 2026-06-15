@@ -1,0 +1,58 @@
+{{- define "settings" -}}
+      "address": "{{ index .nexthop.xray.xhttp.domains.haproxy 0 }}",
+      "port": 443,
+      "id": "{{ .params.nexthop.xray.user }}",
+      "encryption": "none"
+{{- end -}}
+
+{{- define "streamSettings" -}}
+      "network": "xhttp",
+      "xhttpSettings": {
+        "path": "/{{ .nexthop.xray.xhttp.path | strings.Trim "/" }}",
+        "mode": "packet-up"
+      },
+      "security": "tls",
+      "tlsSettings": {
+        "fingerprint": "chrome"
+      }
+{{- end -}}
+
+
+{"outbounds":[
+  {
+    "tag": "out.xhttp.haproxy",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }}
+    }
+  },
+  {
+    "tag": "out.xhttp.haproxy.v4",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv4"
+      }
+    }
+  },
+  {
+    "tag": "out.xhttp.haproxy.v6",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv6"
+      }
+    }
+  }
+]}

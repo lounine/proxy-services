@@ -23,7 +23,9 @@ echo "${nl}${bold}Issuing certificates:${reset}"
 readarray -t domains < <( gomplate << 'EOF' | sed 's/[[:space:]]*//g'
   {{ join .local.xray.xhttp.domains.xray "\n" }}
   {{ join .local.xray.xhttp.domains.nginx "\n" }}
+{{ if test.IsKind "slice" .local.xray.xhttp.domains.cdn -}}
   {{ join .local.xray.xhttp.domains.cdn "\n" }}
+{{- end -}}
 EOF
 )
 
