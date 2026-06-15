@@ -20,11 +20,7 @@ fi
 
 echo "${nl}${bold}Issuing certificates:${reset}"
 
-email="$( echo 'admin@{{ index .local.xray.xhttp.domains 0 }}' |  gomplate )"
-echo "${green}Registering account for <$email>:${reset}"
-docker exec acme --register-account --server letsencrypt -m "$email"
-
-domains=$( gomplate << 'EOF'
+readarray -t domains < <( gomplate << 'EOF'
   {{ join .local.xray.reality.domains " " }}
   {{ join .local.xray.xhttp.domains.xray " " }}
   {{ join .local.xray.xhttp.domains.nginx " " }}
@@ -34,7 +30,11 @@ domains=$( gomplate << 'EOF'
 EOF
 )
 
-for domain in $domains; do
+email="admin@${domains[0]}"
+echo "${green}Registering account for <$email>:${reset}"
+docker exec acme --register-account --server letsencrypt -m "$email"
+
+for domain in "${domains[@]}"; do
   echo "${green}Issuing certificate for $domain:${reset}"
   docker exec acme --issue --server letsencrypt --standalone -d $domain \
                    --fullchain-file /certs/$domain.crt --key-file /certs/$domain.key \
