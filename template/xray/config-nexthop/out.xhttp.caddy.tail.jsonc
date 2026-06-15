@@ -8,7 +8,7 @@
 {{- define "streamSettings" -}}
       "network": "xhttp",
       "xhttpSettings": {
-        "path": "{{ .nexthop.xray.xhttp.path }}",
+        "path": "/{{ .nexthop.xray.xhttp.path | strings.Trim "/" }}",
         "mode": "packet-up"
       },
       "security": "tls",

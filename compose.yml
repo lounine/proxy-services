@@ -26,7 +26,7 @@ services:
       - ${EXTERNAL_PORT:-443}:443
     volumes:
       - ./config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-      - ./certs:/certs:ro
+      - ./certs-haproxy:/certs:ro
     extra_hosts: *extra_hosts
     networks:
       lan:
@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certs:/certs:ro
+      - ./certs-acme:/certs:ro
     extra_hosts: *extra_hosts
     networks:
       lan:
@@ -65,7 +65,7 @@ services:
     command: daemon
     volumes:
       - ./acme:/acme.sh:rw
-      - ./certs:/certs:rw
+      - ./certs-acme:/certs:rw
     networks:
       lan:
         ipv4_address: 172.22.0.11
@@ -77,7 +77,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/xray/:/usr/local/etc/xray/:ro
-      - ./certs/:/certs/:ro
+      - ./certs-acme/:/certs/:ro
     extra_hosts: *extra_hosts
     networks:
       lan:

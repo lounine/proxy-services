@@ -20,13 +20,10 @@ fi
 
 echo "${nl}${bold}Issuing certificates:${reset}"
 
-readarray -t domains < <( gomplate << 'EOF'
-  {{ join .local.xray.reality.domains " " }}
-  {{ join .local.xray.xhttp.domains.xray " " }}
-  {{ join .local.xray.xhttp.domains.nginx " " }}
-  {{ join .local.xray.xhttp.domains.haproxy " " }}
-  {{ join .local.xray.xhttp.domains.cdn " " }}
-  {{ .params.telegram.domain }}
+readarray -t domains < <( gomplate << 'EOF' | sed 's/[[:space:]]*//g'
+  {{ join .local.xray.xhttp.domains.xray "\n" }}
+  {{ join .local.xray.xhttp.domains.nginx "\n" }}
+  {{ join .local.xray.xhttp.domains.cdn "\n" }}
 EOF
 )
 
@@ -38,5 +35,5 @@ for domain in "${domains[@]}"; do
   echo "${green}Issuing certificate for $domain:${reset}"
   docker exec acme --issue --server letsencrypt --standalone -d $domain \
                    --fullchain-file /certs/$domain.crt --key-file /certs/$domain.key \
-                   --reloadcmd 'chmod 640 /certs/*' || : # already issued certificates provoke error here
+                   --reloadcmd 'chmod 644 /certs/*' || : # already issued certificates provoke error here
 done

@@ -6,7 +6,7 @@
 {{- define "streamSettings" -}}
       "network": "xhttp",
       "xhttpSettings": {
-        "path": "{{ .local.xray.xhttp.path }}"
+        "path": "/{{ .local.xray.xhttp.path | strings.Trim "/" }}"
       }
 {{- end -}}
 

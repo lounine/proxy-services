@@ -56,8 +56,16 @@ fi
 
 ##########################  SETTING UP SERVICES  ###########################
 
-[ -d ./acme ]  || install -m 750 -d ./acme
-[ -d ./certs ] || install -m 755 -d ./certs   # ensure access for nginx, xray and haproxy
+[ -d ./acme ] || install -m 750 -d ./acme
+
+# Ensure various containers can access certificates
+[ -d ./certs-acme ] || install -m 755 -d ./certs-acme
+
+if [ ! -d ./certs-haproxy ]; then
+  # Ensure haproxy (group 99) can read and save certificates
+  install -m 770 -d ./certs-haproxy
+  sudo chown :99 ./certs-haproxy
+fi
 
 ./setup/config.sh "$@"
 
