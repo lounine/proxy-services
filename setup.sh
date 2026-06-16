@@ -11,7 +11,7 @@ cd $HOME/.proxy_services
 ##############################  SYSTEM SETUP  ##############################
 
 if [ ! -f .installed-system ]; then
-  echo "net.ipv4.tcp_fastopen = 3" | sudo tee -a /etc/sysctl.d/10-tfo.conf
+  echo "net.ipv4.tcp_fastopen = 3" | sudo tee /etc/sysctl.d/10-tfo.conf
   sudo sysctl -p /etc/sysctl.d/10-tfo.conf
 
   touch .installed-system
