@@ -14,6 +14,11 @@ x-hosts: &extra_hosts
   - "test-remote:172.23.0.21"
   - "test-first-hop:172.24.0.21"
 
+x-logging: &logging
+  driver: "json-file"
+  options:
+    max-size: "100m"
+
 
 services:
 
@@ -28,6 +33,7 @@ services:
       - ./config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - ./certs-haproxy:/certs:rw
     extra_hosts: *extra_hosts
+    logging: *logging
     networks:
       lan:
         ipv4_address: 172.22.0.2
@@ -41,6 +47,7 @@ services:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs-acme:/certs:ro
     extra_hosts: *extra_hosts
+    logging: *logging
     networks:
       lan:
         ipv4_address: 172.22.0.3
@@ -53,6 +60,7 @@ services:
     volumes:
       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     extra_hosts: *extra_hosts
+    logging: *logging
     networks:
       lan:
         ipv4_address: 172.22.0.10
@@ -66,6 +74,7 @@ services:
     volumes:
       - ./acme:/acme.sh:rw
       - ./certs-acme:/certs:rw
+    logging: *logging
     networks:
       lan:
         ipv4_address: 172.22.0.11
@@ -79,6 +88,7 @@ services:
       - ./config/xray/:/usr/local/etc/xray/:ro
       - ./certs-acme/:/certs/:ro
     extra_hosts: *extra_hosts
+    logging: *logging
     networks:
       lan:
         ipv4_address: 172.22.0.12
@@ -91,6 +101,7 @@ services:
     volumes:
       - ./config/mtg/config.toml:/config/config.toml:ro
     extra_hosts: *extra_hosts
+    logging: *logging
     networks:
       lan:
         ipv4_address: 172.22.0.13
@@ -105,6 +116,7 @@ services:
       - NET_ADMIN
     volumes:
       - ./config/test-server/supervisord.ini:/etc/supervisor.d/supervisord.ini:ro
+    logging: *logging
     networks:
       lan:
         ipv4_address: 172.22.0.21
@@ -123,6 +135,7 @@ services:
       - ./config/test/supervisord.ini:/etc/supervisor.d/supervisord.ini:ro
       - ./test/bin:/usr/local/bin/test:ro
     extra_hosts: *extra_hosts
+    logging: *logging
     networks:
       lan:
         ipv4_address: 172.22.0.22
