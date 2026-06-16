@@ -15,12 +15,12 @@
       "outboundTag": "out.vision.reality"
     },
     {
-      "inboundTag": [ "in.xhttp.insecure", "in.socks.tls" ],
-      "outboundTag": "out.xhttp.stream-up"
+      "inboundTag": [ "in.xhttp.insecure", "in.xhttp.tls" ],
+      "outboundTag": "out.xhttp.xray"
     },
     {
       "inboundTag": [ "in.socks" ],
-      "outboundTag": "out.xhttp.stream-up"
+      "outboundTag": "out.xhttp.xray"
     },
 
     {

@@ -10,6 +10,11 @@
       }
 {{- end -}}
 
+{{- $terminate_ssl_for_domains := ( coll.Slice
+                                    .local.xray.xhttp.domains.xray
+                                    .local.xray.xhttp.domains.cdn
+                                  ) | flatten -}}
+
 {"inbounds":[
   {
     "tag": "in.xhttp.insecure",
@@ -17,7 +22,7 @@
     "port": 2443,
     "protocol": "vless",
     "settings": {
-      {{ template "settings" . }} 
+      {{ template "settings" . }}
     },
     "streamSettings": {
       {{ template "streamSettings" . }}
@@ -36,7 +41,7 @@
       "security": "tls",
       "tlsSettings": {
         "serverName": "",
-        "certificates": {{ .local.xray.xhttp.domains.xray |
+        "certificates": {{ $terminate_ssl_for_domains |
           jq `[.[] | {
             certificateFile: "/certs/" + . + ".crt", 
             keyFile: "/certs/" + . + ".key"
