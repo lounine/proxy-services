@@ -21,11 +21,9 @@ fi
 echo "${nl}${bold}Issuing certificates:${reset}"
 
 readarray -t domains < <( gomplate << 'EOF' | sed 's/[[:space:]]*//g'
-  {{ join .local.xray.xhttp.domains.xray "\n" }}
-  {{ join .local.xray.xhttp.domains.nginx "\n" }}
-{{ if test.IsKind "slice" .local.xray.xhttp.domains.cdn -}}
+  {{ join .local.xray.reality.domains "\n" }}
+  {{ join .local.xray.xhttp.domains.direct "\n" }}
   {{ join .local.xray.xhttp.domains.cdn "\n" }}
-{{- end -}}
 EOF
 )
 
@@ -35,8 +33,7 @@ docker exec acme --register-account --server letsencrypt -m "$email"
 
 for domain in "${domains[@]}"; do
   echo "${green}Issuing certificate for $domain:${reset}"
-  docker exec acme --issue \
-        --server letsencrypt --standalone --listen-v4 --listen-v6 \
+  docker exec acme --issue --server letsencrypt --standalone \
         --domain $domain --fullchain-file /certs/$domain.crt --key-file /certs/$domain.key \
         --reloadcmd 'chmod 644 /certs/*' || : # already issued certificates provoke error here
 done

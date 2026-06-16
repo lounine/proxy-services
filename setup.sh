@@ -8,6 +8,12 @@ BRANCH_NAME='self-steal'
 cd $HOME/.proxy_services
 
 
+##############################  SYSTEM SETUP  ##############################
+
+echo "net.ipv4.tcp_fastopen = 3" | sudo tee -a /etc/sysctl.d/10-tfo.conf
+sudo sysctl -p /etc/sysctl.d/10-tfo.conf
+
+
 #######################  INSTALLING SYSTEM PACKAGES  #######################
 
 ARCH=$(dpkg --print-architecture)
@@ -17,7 +23,7 @@ if [ ! -f .installed-system-packages ]; then
 
   sudo apt-get update
   sudo apt-get install -y --no-install-recommends \
-    curl unzip ca-certificates gnupg apache2-utils tree
+    curl unzip ca-certificates gnupg apache2-utils socat tree
 
   echo "Installing gomplate... "
   sudo curl -o /usr/local/bin/gomplate \
@@ -55,19 +61,6 @@ fi
 
 
 ##########################  SETTING UP SERVICES  ###########################
-
-[ -d ./acme ] || install -m 750 -d ./acme
-
-# Set mode 755 to ensure various containers can access certificates
-[ -d ./certs-acme ] || install -m 755 -d ./certs-acme
-
-if [ ! -d ./certs-haproxy ]; then
-  # Ensure haproxy (group 99) can read and save certificates
-  install -m 770 -d ./certs-haproxy
-  sudo chown :99 ./certs-haproxy
-fi
-
-[ -d ./certs-caddy ] || install -m 750 -d ./certs-caddy
 
 ./setup/config.sh "$@"
 

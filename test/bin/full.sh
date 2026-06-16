@@ -21,11 +21,8 @@ function get_socks_port() {
 
   case "$proto" in
     'vision.reality' )    socks_port=9000   ;;
-    'xhttp.xray' )        socks_port=9100   ;;
-    'xhttp.haproxy' )     socks_port=9200   ;;
-    'xhttp.nginx' )       socks_port=9300   ;;
-    'xhttp.caddy' )       socks_port=9400   ;;
-    'xhttp.cdn' )         socks_port=9500   ;;
+    'xhttp.direct' )      socks_port=9100   ;;
+    'xhttp.cdn' )         socks_port=9200   ;;
     *)                    echo "Unknown protocol: $proto";  exit 1   ;;
   esac
 
@@ -105,10 +102,7 @@ function run_tests_for_protocol() {
 function run_tests() {
   local protocols=(
     'vision.reality'
-    'xhttp.xray'
-    'xhttp.haproxy'
-    'xhttp.caddy'
-    'xhttp.nginx'
+    'xhttp.direct'
     'xhttp.cdn'
   )
 

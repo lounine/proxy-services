@@ -26,29 +26,14 @@ setup_tun 9000
 setup_tun 9004
 setup_tun 9006
 
-# in.socks.test.out.xhttp.xray
+# in.socks.test.out.xhttp.direct
 setup_tun 9100
 setup_tun 9104
 setup_tun 9106
 
-# in.socks.test.out.xhttp.haproxy
+# in.socks.test.out.xhttp.cdn
 setup_tun 9200
 setup_tun 9204
 setup_tun 9206
-
-# in.socks.test.out.xhttp.nginx
-setup_tun 9300
-setup_tun 9304
-setup_tun 9306
-
-# in.socks.test.out.xhttp.caddy
-setup_tun 9400
-setup_tun 9404
-setup_tun 9406
-
-# in.socks.test.out.xhttp.cdn
-setup_tun 9500
-setup_tun 9504
-setup_tun 9506
 
 /usr/bin/supervisord -c /etc/supervisord.conf

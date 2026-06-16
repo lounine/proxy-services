@@ -1,5 +1,5 @@
 {{- define "settings" -}}
-      "address": "{{ index .nexthop.xray.xhttp.domains.haproxy 0 }}",
+      "address": "{{ index .nexthop.xray.xhttp.domains.direct 0 }}",
       "port": 443,
       "id": "{{ .params.nexthop.xray.user }}",
       "encryption": "none"
@@ -20,7 +20,7 @@
 
 {"outbounds":[
   {
-    "tag": "out.xhttp.haproxy",
+    "tag": "out.xhttp.direct",
     "protocol": "vless",
     "settings": {
       {{ template "settings" . }} 
@@ -30,7 +30,7 @@
     }
   },
   {
-    "tag": "out.xhttp.haproxy.v4",
+    "tag": "out.xhttp.direct.v4",
     "protocol": "vless",
     "settings": {
       {{ template "settings" . }} 
@@ -43,7 +43,7 @@
     }
   },
   {
-    "tag": "out.xhttp.haproxy.v6",
+    "tag": "out.xhttp.direct.v6",
     "protocol": "vless",
     "settings": {
       {{ template "settings" . }} 

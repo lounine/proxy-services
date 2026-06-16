@@ -15,12 +15,12 @@
       "outboundTag": "out.vision.reality"
     },
     {
-      "inboundTag": [ "in.xhttp.insecure", "in.xhttp.tls" ],
-      "outboundTag": "out.xhttp.xray"
+      "inboundTag": [ "in.xhttp" ],
+      "outboundTag": "out.xhttp.direct"
     },
     {
       "inboundTag": [ "in.socks" ],
-      "outboundTag": "out.xhttp.xray"
+      "outboundTag": "out.xhttp.direct"
     },
 
     {
@@ -37,55 +37,16 @@
     },
 
     {
-      "inboundTag": [ "in.socks.test.out.xhttp.xray" ],
-      "outboundTag": "out.xhttp.xray"
+      "inboundTag": [ "in.socks.test.out.xhttp.direct" ],
+      "outboundTag": "out.xhttp.direct"
     },
     {
-      "inboundTag": [ "in.socks.test.out.xhttp.xray.v4" ],
-      "outboundTag": "out.xhttp.xray.v4"
+      "inboundTag": [ "in.socks.test.out.xhttp.direct.v4" ],
+      "outboundTag": "out.xhttp.direct.v4"
     },
     {
-      "inboundTag": [ "in.socks.test.out.xhttp.xray.v6" ],
-      "outboundTag": "out.xhttp.xray.v6"
-    },
-
-    {
-      "inboundTag": [ "in.socks.test.out.xhttp.haproxy" ],
-      "outboundTag": "out.xhttp.haproxy"
-    },
-    {
-      "inboundTag": [ "in.socks.test.out.xhttp.haproxy.v4" ],
-      "outboundTag": "out.xhttp.haproxy.v4"
-    },
-    {
-      "inboundTag": [ "in.socks.test.out.xhttp.haproxy.v6" ],
-      "outboundTag": "out.xhttp.haproxy.v6"
-    },
-    
-    {
-      "inboundTag": [ "in.socks.test.out.xhttp.nginx" ],
-      "outboundTag": "out.xhttp.nginx"
-    },
-    {
-      "inboundTag": [ "in.socks.test.out.xhttp.nginx.v4" ],
-      "outboundTag": "out.xhttp.nginx.v4"
-    },
-    {
-      "inboundTag": [ "in.socks.test.out.xhttp.nginx.v6" ],
-      "outboundTag": "out.xhttp.nginx.v6"
-    },
-
-    {
-      "inboundTag": [ "in.socks.test.out.xhttp.caddy" ],
-      "outboundTag": "out.xhttp.caddy"
-    },
-    {
-      "inboundTag": [ "in.socks.test.out.xhttp.caddy.v4" ],
-      "outboundTag": "out.xhttp.caddy.v4"
-    },
-    {
-      "inboundTag": [ "in.socks.test.out.xhttp.caddy.v6" ],
-      "outboundTag": "out.xhttp.caddy.v6"
+      "inboundTag": [ "in.socks.test.out.xhttp.direct.v6" ],
+      "outboundTag": "out.xhttp.direct.v6"
     },
 
     {

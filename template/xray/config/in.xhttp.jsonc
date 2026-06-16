@@ -10,43 +10,17 @@
       }
 {{- end -}}
 
-{{- $terminate_ssl_for_domains := ( coll.Slice
-                                    .local.xray.xhttp.domains.xray
-                                    .local.xray.xhttp.domains.cdn
-                                  ) | flatten -}}
-
 {"inbounds":[
   {
-    "tag": "in.xhttp.insecure",
+    "tag": "in.xhttp",
     "listen": "0.0.0.0",
-    "port": 2443,
+    "port": 80,
     "protocol": "vless",
     "settings": {
       {{ template "settings" . }}
     },
     "streamSettings": {
       {{ template "streamSettings" . }}
-    }
-  },
-  {
-    "tag": "in.xhttp.tls",
-    "listen": "0.0.0.0",
-    "port": 3443,
-    "protocol": "vless",
-    "settings": {
-      {{ template "settings" . }} 
-    },
-    "streamSettings": {
-      {{ template "streamSettings" . }},
-      "security": "tls",
-      "tlsSettings": {
-        "serverName": "",
-        "certificates": {{ $terminate_ssl_for_domains |
-          jq `[.[] | {
-            certificateFile: "/certs/" + . + ".crt", 
-            keyFile: "/certs/" + . + ".key"
-          }]` | toJSON }}
-      }
     }
   }
 ]}
