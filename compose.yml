@@ -31,7 +31,7 @@ services:
       - ${EXTERNAL_PORT:-443}:443
     volumes:
       - ./config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-      - ./certs-haproxy:/certs:rw
+      - haproxy_data:/var/lib/haproxy:rw
     extra_hosts: *extra_hosts
     logging: *logging
     networks:
@@ -45,7 +45,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certs-acme:/certs:ro
+      - acme_certs:/certs:ro
     extra_hosts: *extra_hosts
     logging: *logging
     networks:
@@ -59,6 +59,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data:rw
+      - caddy_config:/config:rw
     extra_hosts: *extra_hosts
     logging: *logging
     networks:
@@ -72,8 +74,8 @@ services:
     restart: unless-stopped
     command: daemon
     volumes:
-      - ./acme:/acme.sh:rw
-      - ./certs-acme:/certs:rw
+      - acme_account:/acme.sh:rw
+      - acme_certs:/certs:rw
     logging: *logging
     networks:
       lan:
@@ -86,7 +88,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/xray/:/usr/local/etc/xray/:ro
-      - ./certs-acme/:/certs/:ro
+      - acme_certs:/certs:ro
     extra_hosts: *extra_hosts
     logging: *logging
     networks:
@@ -121,7 +123,7 @@ services:
       lan:
         ipv4_address: 172.22.0.21
         ipv6_address: fd00:0:0:1::21
-        
+   
   test:
     container_name: test
     build:
@@ -150,3 +152,11 @@ networks:
       config:
         - subnet: 172.22.0.0/16
         - subnet: "fd00:0:0:1::/64"
+
+
+volumes:
+  caddy_data:
+  caddy_config:
+  acme_account:
+  acme_certs:
+  haproxy_data:

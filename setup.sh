@@ -58,7 +58,7 @@ fi
 
 [ -d ./acme ] || install -m 750 -d ./acme
 
-# Ensure various containers can access certificates
+# Set mode 755 to ensure various containers can access certificates
 [ -d ./certs-acme ] || install -m 755 -d ./certs-acme
 
 if [ ! -d ./certs-haproxy ]; then
@@ -66,6 +66,8 @@ if [ ! -d ./certs-haproxy ]; then
   install -m 770 -d ./certs-haproxy
   sudo chown :99 ./certs-haproxy
 fi
+
+[ -d ./certs-caddy ] || install -m 750 -d ./certs-caddy
 
 ./setup/config.sh "$@"
 
