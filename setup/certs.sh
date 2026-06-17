@@ -44,3 +44,10 @@ for domain in "${domains[@]}"; do
     docker exec acme --deploy --deploy-hook haproxy --domain $domain
   fi
 done
+
+echo "${green}Issued certificates:${reset}"
+sudo docker exec acme --list
+
+echo "${nl}${green}Deployed certificates:${reset}"
+echo "show ssl cert" | sudo docker compose exec --no-tty acme \
+                       socat /var/lib/haproxy/admin.sock -
