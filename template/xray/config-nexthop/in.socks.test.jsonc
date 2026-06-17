@@ -24,34 +24,50 @@
   },
 
   {
-    "tag": "in.socks.test.out.xhttp.direct",
+    "tag": "in.socks.test.out.xhttp.packet-up",
     "port": 9100,
     {{ template "common" . }}
   },
   {
-    "tag": "in.socks.test.out.xhttp.direct.v4",
+    "tag": "in.socks.test.out.xhttp.packet-up.v4",
     "port": 9104,
     {{ template "common" . }}
   },
   {
-    "tag": "in.socks.test.out.xhttp.direct.v6",
+    "tag": "in.socks.test.out.xhttp.packet-up.v6",
     "port": 9106,
+    {{ template "common" . }}
+  },
+  
+  {
+    "tag": "in.socks.test.out.xhttp.stream-up",
+    "port": 9200,
+    {{ template "common" . }}
+  },
+  {
+    "tag": "in.socks.test.out.xhttp.stream-up.v4",
+    "port": 9204,
+    {{ template "common" . }}
+  },
+  {
+    "tag": "in.socks.test.out.xhttp.stream-up.v6",
+    "port": 9206,
     {{ template "common" . }}
   },
 
   {
     "tag": "in.socks.test.out.xhttp.cdn",
-    "port": 9200,
+    "port": 9300,
     {{ template "common" . }}
   },
   {
     "tag": "in.socks.test.out.xhttp.cdn.v4",
-    "port": 9204,
+    "port": 9304,
     {{ template "common" . }}
   },
   {
     "tag": "in.socks.test.out.xhttp.cdn.v6",
-    "port": 9206,
+    "port": 9306,
     {{ template "common" . }}
   }
 ]}

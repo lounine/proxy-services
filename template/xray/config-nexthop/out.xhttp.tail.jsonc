@@ -1,0 +1,106 @@
+{{- define "settings" -}}
+      "address": "{{ index .nexthop.xray.xhttp.domains.direct 0 }}",
+      "port": 443,
+      "id": "{{ .params.nexthop.xray.user }}",
+      "encryption": "none"
+{{- end -}}
+
+{{- define "streamSettings.packet-up" -}}
+      "network": "xhttp",
+      "xhttpSettings": {
+        "path": "/{{ .nexthop.xray.xhttp.path | strings.Trim "/" }}",
+        "mode": "packet-up"
+      },
+      "security": "tls",
+      "tlsSettings": {
+          "fingerprint": "chrome"
+        }
+{{- end -}}
+
+{{- define "streamSettings.stream-up" -}}
+      "network": "xhttp",
+      "xhttpSettings": {
+        "path": "/{{ .nexthop.xray.xhttp.path | strings.Trim "/" }}",
+        "mode": "stream-up"
+      },
+      "security": "tls",
+      "tlsSettings": {
+          "fingerprint": "chrome"
+        }
+{{- end -}}
+
+
+{"outbounds":[
+  {
+    "tag": "out.xhttp.packet-up",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings.packet-up" . }}
+    }
+  },
+  {
+    "tag": "out.xhttp.stream-up",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings.stream-up" . }}
+    }
+  },
+  {
+    "tag": "out.xhttp.packet-up.v4",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings.packet-up" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv4"
+      }
+    }
+  },
+{
+    "tag": "out.xhttp.stream-up.v4",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings.stream-up" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv4"
+      }
+    }
+  },
+  {
+    "tag": "out.xhttp.packet-up.v6",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings.packet-up" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv6"
+      }
+    }
+  },
+  {
+    "tag": "out.xhttp.stream-up.v6",
+    "protocol": "vless",
+    "settings": {
+      {{ template "settings" . }} 
+    },
+    "streamSettings": {
+      {{ template "streamSettings.stream-up" . }},
+      "sockopt": {
+        "domainStrategy": "ForceIPv6"
+      }
+    }
+  }
+]}
