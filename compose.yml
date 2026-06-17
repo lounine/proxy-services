@@ -30,6 +30,7 @@ services:
     volumes:
       - ./config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - acme_certs:/certs:ro
+      - haproxy_admin:/var/lib/haproxy:rw
     extra_hosts: *extra_hosts
     logging: *logging
     networks:
@@ -45,6 +46,13 @@ services:
     volumes:
       - acme_account:/acme.sh:rw
       - acme_certs:/certs:rw
+      - haproxy_admin:/var/lib/haproxy:rw
+    environment:
+      DEPLOY_HAPROXY_HOT_UPDATE: yes 
+      DEPLOY_HAPROXY_STATS_SOCKET: UNIX:/var/lib/haproxy/admin.sock 
+      DEPLOY_HAPROXY_PEM_PATH: /certs
+    depends_on: 
+      - haproxy   # important in order to create haproxy_admin volume with proper ownership 
     logging: *logging
     networks:
       lan:
@@ -125,3 +133,4 @@ networks:
 volumes:
   acme_account:
   acme_certs:
+  haproxy_admin:

@@ -27,7 +27,7 @@ if [ ! -f .installed-system-packages ]; then
 
   sudo apt-get update
   sudo apt-get install -y --no-install-recommends \
-    curl unzip ca-certificates gnupg apache2-utils socat tree
+    curl unzip ca-certificates gnupg apache2-utils tree
 
   echo "Installing gomplate... "
   sudo curl -o /usr/local/bin/gomplate \

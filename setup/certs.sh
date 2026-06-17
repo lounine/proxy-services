@@ -33,7 +33,7 @@ docker exec acme --register-account --server letsencrypt -m "$email"
 
 for domain in "${domains[@]}"; do
   echo "${green}Issuing certificate for $domain:${reset}"
-  docker exec acme --issue --server letsencrypt --standalone \
-        --domain $domain --fullchain-file /certs/$domain.crt --key-file /certs/$domain.key \
-        --reloadcmd 'chmod 644 /certs/*' || : # already issued certificates provoke error here
+  docker exec acme --issue --server letsencrypt --standalone --domain $domain
+  docker exec acme --deploy --deploy-hook haproxy --domain $domain
+                   
 done
