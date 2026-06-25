@@ -9,16 +9,25 @@ for file in /usr/local/bin/test/*; do
   fi
 done
 
+nft add table ip tun2socks
+nft add chain ip tun2socks output { type route hook output priority mangle\; policy accept\; }
+
 function setup_tun() {
   port=$1
+  dev=tun_${port}
   ip1=$(( port / 10000 ))
   ip2=$(( (port - ip1 * 10000) / 100 ))
   ip3=$(( port - ip1 * 10000 - ip2 * 100 ))
-  ip=10.${ip1}.${ip2}.${ip3}
+  cidr=10.${ip1}.${ip2}.${ip3}/32
 
-  ip tuntap add mode tun dev tun_${port}
-  ip addr add ${ip}/32 dev tun_${port}
-  ip link set dev tun_${port} up
+  ip tuntap add mode tun dev ${dev}
+  ip addr add ${cidr} dev ${dev}
+  ip link set dev ${dev} up
+  
+  ip route add default dev ${dev} table ${port}
+  ip rule add fwmark 0x${port} table ${port} priority ${port}
+
+  nft add rule ip tun2socks output ip saddr ${cidr} meta mark set 0x${port}
 }
 
 # in.socks.test.out.vision.reality

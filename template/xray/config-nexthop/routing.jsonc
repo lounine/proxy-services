@@ -16,11 +16,11 @@
     },
     {
       "inboundTag": [ "in.xhttp" ],
-      "outboundTag": "out.xhttp.direct"
+      "outboundTag": "out.xhttp.packet-up"
     },
     {
       "inboundTag": [ "in.socks" ],
-      "outboundTag": "out.xhttp.direct"
+      "outboundTag": "out.xhttp.packet-up"
     },
 
     {
