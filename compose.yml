@@ -64,7 +64,7 @@ services:
     image: ghcr.io/xtls/xray-core
     restart: unless-stopped
     volumes:
-      - ./config/xray/:/usr/local/etc/xray/:ro
+      - ./config/xray:/usr/local/etc/xray:ro
     extra_hosts: *extra_hosts
     logging: *logging
     networks:
